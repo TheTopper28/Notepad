@@ -2,49 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Revision Practice</title>
+  <title>Student Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="login-body">
 
-<header class="app-header">
-  <h1>📘 Revision Practice</h1>
+<div class="login-card">
+  <h2>Create / Login Account</h2>
 
-  <div class="top-controls">
-    <input id="searchBox" placeholder="Search questions...">
-    <button id="toggleTheme">🌙</button>
-    <button id="randomMode">🎲</button>
-  </div>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
 
-  <div class="user-display">
-    <span id="userName"></span>
-    <button id="logoutBtn">Logout</button>
-  </div>
+  <button onclick="saveUser()">Enter</button>
 
-  <div class="progress-text" id="topicProgress"></div>
-</header>
+  <p id="loginMsg"></p>
+</div>
 
-<main class="container">
+<script>
+function saveUser() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
 
-  <section class="controls">
-    <div>
-      <label>Subject</label>
-      <select id="subjectSelect"></select>
-    </div>
+  if (!user || !pass) {
+    document.getElementById("loginMsg").innerText = "Fill all fields";
+    return;
+  }
 
-    <div>
-      <label>Topic</label>
-      <select id="topicSelect"></select>
-    </div>
-  </section>
+  localStorage.setItem("reviseUser", user);
+  localStorage.setItem("revisePass", pass);
 
-  <div id="questionCounter"></div>
+  window.location.href = "index.html";
+}
+</script>
 
-  <section id="questionArea" class="question-area"></section>
-
-</main>
-
-<script src="script.js"></script>
 </body>
 </html>
