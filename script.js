@@ -1,13 +1,3 @@
-// LOGIN CHECK
-const user=localStorage.getItem("rev_current_user");
-if(!user) location.href="login.html";
-userName.textContent="👤 "+user;
-
-logoutBtn.onclick=()=>{
-  localStorage.removeItem("rev_current_user");
-  location.href="login.html";
-};
-
 // DATA
 const data={
   Mathematics:{
@@ -26,11 +16,21 @@ const data={
   }
 };
 
-// ELEMENTS
+const subjectSelect=document.getElementById("subjectSelect");
+const topicSelect=document.getElementById("topicSelect");
+const questionArea=document.getElementById("questionArea");
+const counter=document.getElementById("counter");
+const searchBox=document.getElementById("searchBox");
+const themeBtn=document.getElementById("themeBtn");
+const prevBtn=document.getElementById("prevBtn");
+const nextBtn=document.getElementById("nextBtn");
+const toggleBtn=document.getElementById("toggleBtn");
+
 let questions=[];
 let index=0;
 let single=true;
 
+// SUBJECTS
 Object.keys(data).forEach(s=>{
   subjectSelect.innerHTML+=`<option>${s}</option>`;
 });
