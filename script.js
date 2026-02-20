@@ -93,13 +93,11 @@ function loadQuestions(){
 function render(){
   counter.textContent=`${index+1}/${questions.length}`;
   if(single){
-    questionArea.innerHTML=singleCardHTML(questions[index],index);
-    // attach show answer button
-    const btn=document.getElementById("showAnswerBtn");
-    const ans=document.getElementById("answerDiv");
-    btn.onclick=()=>{ans.style.display=ans.style.display==="block"?"none":"block";}
+    questionArea.innerHTML=questions.length>0?singleCardHTML(questions[index],index):"No questions";
+    attachShowButtons();
   }else{
     questionArea.innerHTML=questions.map((q,i)=>multiCardHTML(q,i)).join("");
+    attachShowButtons();
   }
 }
 
@@ -108,8 +106,8 @@ function singleCardHTML(qObj,i){
   return `<div class="card">
     <b>${qObj.q}</b>
     <span class="star" onclick="toggleDiff(${i})">${qObj.d?"⭐":"☆"}</span>
-    <div id="answerDiv" class="answer">${qObj.a}</div>
-    <button id="showAnswerBtn" class="showAnswerBtn">Show/Hide Answer</button>
+    <div class="answer">${qObj.a}</div>
+    <button class="showAnswerBtn">Show/Hide Answer</button>
   </div>`;
 }
 
@@ -118,7 +116,16 @@ function multiCardHTML(qObj,i){
     <b>${qObj.q}</b>
     <span class="star" onclick="toggleDiff(${i})">${qObj.d?"⭐":"☆"}</span>
     <div class="answer">${qObj.a}</div>
+    <button class="showAnswerBtn">Show/Hide Answer</button>
   </div>`;
+}
+
+// ===== ATTACH SHOW BUTTONS =====
+function attachShowButtons(){
+  document.querySelectorAll(".showAnswerBtn").forEach(btn=>{
+    const ans=btn.previousElementSibling;
+    btn.onclick=()=>{ans.style.display=ans.style.display==="block"?"none":"block";}
+  });
 }
 
 // ===== TOGGLE DIFFICULT =====
