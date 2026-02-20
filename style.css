@@ -19,40 +19,6 @@ body{
   color:var(--text);
 }
 
-/* LOGIN */
-.login-page{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-}
-
-.login-box{
-  background:var(--panel);
-  padding:30px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,.4);
-  text-align:center;
-}
-
-.login-box input{
-  display:block;
-  width:200px;
-  margin:10px auto;
-  padding:8px;
-  border-radius:8px;
-  border:none;
-}
-
-.login-box button{
-  padding:8px 16px;
-  border:none;
-  border-radius:8px;
-  background:linear-gradient(90deg,#6366f1,#06b6d4);
-  color:white;
-  cursor:pointer;
-}
-
 /* HEADER */
 .app-header{
   padding:16px;
