@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <title>Revision Practice</title>
@@ -7,23 +7,30 @@
 </head>
 <body>
 
-<header>
+<header class="app-header">
   <h1>Revision Practice</h1>
-  <div id="userDisplay"></div>
+
+  <div class="top-right">
+    <span id="userName"></span>
+    <span id="counter"></span>
+    <input id="searchBox" placeholder="Search">
+    <button id="themeBtn">🌙</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
 </header>
 
-<div class="selectors">
+<div class="controls">
   <select id="subjectSelect"></select>
   <select id="topicSelect"></select>
 </div>
 
 <div class="question-nav">
-  <button id="prevBtn">⬅ Previous</button>
-  <button id="nextBtn">Next ➡</button>
-  <button id="toggleViewBtn">📋 Show All</button>
+  <button id="prevBtn">⬅</button>
+  <button id="nextBtn">➡</button>
+  <button id="toggleBtn">Show All</button>
 </div>
 
-<div id="questionContainer"></div>
+<div id="questionArea"></div>
 
 <script src="script.js"></script>
 </body>
