@@ -1,102 +1,112 @@
-// USER DISPLAY
-const user = localStorage.getItem("reviseUser");
-if (!user) window.location.href = "login.html";
-document.getElementById("userDisplay").innerText = "👤 " + user;
+// LOGIN CHECK
+const user=localStorage.getItem("rev_current_user");
+if(!user) location.href="login.html";
+userName.textContent="👤 "+user;
 
-// SUBJECT DATA (EDIT HERE)
-const data = {
-  Math: {
-    Algebra: [
-      "Solve: 2x + 5 = 15",
-      "Factor: x² − 9",
-      "Simplify: (a+b)²"
+logoutBtn.onclick=()=>{
+  localStorage.removeItem("rev_current_user");
+  location.href="login.html";
+};
+
+// DATA
+const data={
+  Mathematics:{
+    Algebra:[
+      {q:"Solve 2x+5=15",a:"x=5",d:false},
+      {q:"x²-9",a:"(x-3)(x+3)",d:true}
     ],
-    Geometry: [
-      "Area of circle formula?",
-      "Sum of angles of triangle?",
-      "Pythagoras theorem?"
+    Geometry:[
+      {q:"Sum of triangle angles",a:"180°",d:false}
     ]
   },
-  Science: {
-    Physics: [
-      "Unit of force?",
-      "Speed formula?",
-      "Gravity value?"
-    ],
-    Chemistry: [
-      "H2O is?",
-      "pH of acid?",
-      "Atomic number?"
+  Science:{
+    Physics:[
+      {q:"Unit of force",a:"Newton",d:false}
     ]
   }
 };
 
-// SELECTORS
-const subjectSelect = document.getElementById("subjectSelect");
-const topicSelect = document.getElementById("topicSelect");
-const container = document.getElementById("questionContainer");
+// ELEMENTS
+let questions=[];
+let index=0;
+let single=true;
 
-Object.keys(data).forEach(sub => {
-  subjectSelect.innerHTML += `<option>${sub}</option>`;
+Object.keys(data).forEach(s=>{
+  subjectSelect.innerHTML+=`<option>${s}</option>`;
 });
 
-subjectSelect.addEventListener("change", loadTopics);
-topicSelect.addEventListener("change", loadQuestions);
+subjectSelect.onchange=loadTopics;
+topicSelect.onchange=loadQuestions;
 
-// NAVIGATION
-let questions = [];
-let currentIndex = 0;
-let singleView = true;
-
-function loadTopics() {
-  topicSelect.innerHTML = "";
-  const topics = Object.keys(data[subjectSelect.value]);
-  topics.forEach(t => topicSelect.innerHTML += `<option>${t}</option>`);
+function loadTopics(){
+  topicSelect.innerHTML="";
+  Object.keys(data[subjectSelect.value])
+    .forEach(t=>topicSelect.innerHTML+=`<option>${t}</option>`);
   loadQuestions();
 }
 
-function loadQuestions() {
-  questions = data[subjectSelect.value][topicSelect.value];
-  currentIndex = 0;
-  showSingleQuestion();
+function loadQuestions(){
+  questions=data[subjectSelect.value][topicSelect.value];
+  index=0;
+  render();
 }
 
-function showSingleQuestion() {
-  container.innerHTML =
-    `<div class="question">${questions[currentIndex]}</div>`;
+function cardHTML(obj,i){
+  return `
+  <div class="card">
+    <b>${obj.q}</b>
+    <span class="star" onclick="toggleDiff(${i})">
+      ${obj.d?"⭐":"☆"}
+    </span>
+    <div class="answer">${obj.a}</div>
+  </div>`;
 }
 
-function showAllQuestions() {
-  container.innerHTML = questions
-    .map(q => `<div class="question">${q}</div>`)
-    .join("");
+function render(){
+  counter.textContent=`${index+1}/${questions.length}`;
+  if(single){
+    questionArea.innerHTML=cardHTML(questions[index],index);
+  }else{
+    questionArea.innerHTML=
+      questions.map((q,i)=>cardHTML(q,i)).join("");
+  }
 }
 
-// BUTTONS
-document.getElementById("nextBtn").onclick = () => {
-  if (currentIndex < questions.length - 1) {
-    currentIndex++;
-    showSingleQuestion();
-  }
+function toggleDiff(i){
+  questions[i].d=!questions[i].d;
+  render();
+}
+
+// NAV
+prevBtn.onclick=()=>{
+  if(index>0) index--;
+  render();
 };
 
-document.getElementById("prevBtn").onclick = () => {
-  if (currentIndex > 0) {
-    currentIndex--;
-    showSingleQuestion();
-  }
+nextBtn.onclick=()=>{
+  if(index<questions.length-1) index++;
+  render();
 };
 
-document.getElementById("toggleViewBtn").onclick = () => {
-  singleView = !singleView;
-  if (singleView) {
-    showSingleQuestion();
-    toggleViewBtn.innerText = "📋 Show All";
-  } else {
-    showAllQuestions();
-    toggleViewBtn.innerText = "🔎 Single View";
-  }
+toggleBtn.onclick=()=>{
+  single=!single;
+  toggleBtn.textContent=single?"Show All":"Single";
+  render();
 };
 
-// INITIAL LOAD
+// SEARCH
+searchBox.oninput=()=>{
+  const term=searchBox.value.toLowerCase();
+  questions=data[subjectSelect.value][topicSelect.value]
+    .filter(q=>q.q.toLowerCase().includes(term));
+  index=0;
+  render();
+};
+
+// THEME
+themeBtn.onclick=()=>{
+  document.body.classList.toggle("light");
+};
+
+// INIT
 loadTopics();
