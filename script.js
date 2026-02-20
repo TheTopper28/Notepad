@@ -1,4 +1,39 @@
-// DATA
+// ===== LOGIN =====
+const loginPage=document.getElementById("loginPage");
+const appPage=document.getElementById("appPage");
+const userName=document.getElementById("userName");
+const loginBtn=document.getElementById("loginBtn");
+const userInput=document.getElementById("userInput");
+const passInput=document.getElementById("passInput");
+const logoutBtn=document.getElementById("logoutBtn");
+
+loginBtn.onclick=()=>{
+  const u=userInput.value.trim();
+  const p=passInput.value.trim();
+  if(!u||!p){alert("Enter details"); return;}
+  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
+  if(!users[u]){users[u]=p; alert("Account created");}
+  else if(users[u]!==p){alert("Wrong password"); return;}
+  localStorage.setItem("rev_users",JSON.stringify(users));
+  localStorage.setItem("rev_current_user",u);
+  startApp(u);
+};
+
+function startApp(u){
+  loginPage.classList.add("hidden");
+  appPage.classList.remove("hidden");
+  userName.textContent="👤 "+u;
+}
+
+// Check if already logged in
+const currentUser=localStorage.getItem("rev_current_user");
+if(currentUser) startApp(currentUser);
+logoutBtn.onclick=()=>{
+  localStorage.removeItem("rev_current_user");
+  location.reload();
+};
+
+// ===== DATA =====
 const data={
   Mathematics:{
     Algebra:[
@@ -16,7 +51,7 @@ const data={
   }
 };
 
-// ELEMENTS
+// ===== ELEMENTS =====
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 const questionArea=document.getElementById("questionArea");
@@ -27,40 +62,35 @@ const prevBtn=document.getElementById("prevBtn");
 const nextBtn=document.getElementById("nextBtn");
 const toggleBtn=document.getElementById("toggleBtn");
 
-// STATE
+// ===== STATE =====
 let questions=[];
 let index=0;
 let single=true;
 
-// INIT SUBJECTS
+// ===== INIT SUBJECTS =====
 Object.keys(data).forEach(s=>{
-  const opt=document.createElement("option");
-  opt.value=s; opt.textContent=s;
-  subjectSelect.appendChild(opt);
+  subjectSelect.innerHTML+=`<option>${s}</option>`;
 });
 subjectSelect.addEventListener("change",loadTopics);
 topicSelect.addEventListener("change",loadQuestions);
 
-// LOAD TOPICS
+// ===== LOAD TOPICS =====
 function loadTopics(){
   topicSelect.innerHTML="";
-  const topics=Object.keys(data[subjectSelect.value]);
-  topics.forEach(t=>{
-    const opt=document.createElement("option");
-    opt.value=t; opt.textContent=t;
-    topicSelect.appendChild(opt);
+  Object.keys(data[subjectSelect.value]).forEach(t=>{
+    topicSelect.innerHTML+=`<option>${t}</option>`;
   });
   loadQuestions();
 }
 
-// LOAD QUESTIONS
+// ===== LOAD QUESTIONS =====
 function loadQuestions(){
   questions=data[subjectSelect.value][topicSelect.value];
   index=0;
   render();
 }
 
-// RENDER FUNCTION
+// ===== RENDER =====
 function render(){
   counter.textContent=`${index+1}/${questions.length}`;
   if(single){
@@ -70,7 +100,7 @@ function render(){
   }
 }
 
-// CARD HTML
+// ===== CARD HTML =====
 function cardHTML(qObj,i){
   return `<div class="card">
     <b>${qObj.q}</b>
@@ -79,13 +109,13 @@ function cardHTML(qObj,i){
   </div>`;
 }
 
-// TOGGLE DIFFICULT
+// ===== TOGGLE DIFFICULT =====
 function toggleDiff(i){
   questions[i].d=!questions[i].d;
   render();
 }
 
-// NAVIGATION
+// ===== NAVIGATION =====
 prevBtn.onclick=()=>{
   if(index>0) index--;
   render();
@@ -100,7 +130,7 @@ toggleBtn.onclick=()=>{
   render();
 };
 
-// SEARCH
+// ===== SEARCH =====
 searchBox.oninput=()=>{
   const term=searchBox.value.toLowerCase();
   questions=data[subjectSelect.value][topicSelect.value]
@@ -109,8 +139,8 @@ searchBox.oninput=()=>{
   render();
 };
 
-// THEME
+// ===== THEME =====
 themeBtn.onclick=()=>document.body.classList.toggle("light");
 
-// INITIAL LOAD
+// ===== INITIAL LOAD =====
 loadTopics();
