@@ -56,7 +56,6 @@ const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 const questionArea=document.getElementById("questionArea");
 const counter=document.getElementById("counter");
-const searchBox=document.getElementById("searchBox");
 const themeBtn=document.getElementById("themeBtn");
 const prevBtn=document.getElementById("prevBtn");
 const nextBtn=document.getElementById("nextBtn");
@@ -94,14 +93,27 @@ function loadQuestions(){
 function render(){
   counter.textContent=`${index+1}/${questions.length}`;
   if(single){
-    questionArea.innerHTML=cardHTML(questions[index],index);
+    questionArea.innerHTML=singleCardHTML(questions[index],index);
+    // attach show answer button
+    const btn=document.getElementById("showAnswerBtn");
+    const ans=document.getElementById("answerDiv");
+    btn.onclick=()=>{ans.style.display=ans.style.display==="block"?"none":"block";}
   }else{
-    questionArea.innerHTML=questions.map((q,i)=>cardHTML(q,i)).join("");
+    questionArea.innerHTML=questions.map((q,i)=>multiCardHTML(q,i)).join("");
   }
 }
 
 // ===== CARD HTML =====
-function cardHTML(qObj,i){
+function singleCardHTML(qObj,i){
+  return `<div class="card">
+    <b>${qObj.q}</b>
+    <span class="star" onclick="toggleDiff(${i})">${qObj.d?"⭐":"☆"}</span>
+    <div id="answerDiv" class="answer">${qObj.a}</div>
+    <button id="showAnswerBtn" class="showAnswerBtn">Show/Hide Answer</button>
+  </div>`;
+}
+
+function multiCardHTML(qObj,i){
   return `<div class="card">
     <b>${qObj.q}</b>
     <span class="star" onclick="toggleDiff(${i})">${qObj.d?"⭐":"☆"}</span>
@@ -127,15 +139,6 @@ nextBtn.onclick=()=>{
 toggleBtn.onclick=()=>{
   single=!single;
   toggleBtn.textContent=single?"Show All":"Single";
-  render();
-};
-
-// ===== SEARCH =====
-searchBox.oninput=()=>{
-  const term=searchBox.value.toLowerCase();
-  questions=data[subjectSelect.value][topicSelect.value]
-    .filter(q=>q.q.toLowerCase().includes(term));
-  index=0;
   render();
 };
 
