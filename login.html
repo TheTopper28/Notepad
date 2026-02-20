@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+
+<div class="login-card">
+  <h2>Create / Login Account</h2>
+
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+
+  <button onclick="saveUser()">Enter</button>
+
+  <p id="loginMsg"></p>
+</div>
+
+<script>
+function saveUser() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+
+  if (!user || !pass) {
+    document.getElementById("loginMsg").innerText = "Fill all fields";
+    return;
+  }
+
+  localStorage.setItem("reviseUser", user);
+  localStorage.setItem("revisePass", pass);
+
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
