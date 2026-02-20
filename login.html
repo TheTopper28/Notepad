@@ -1,39 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Student Login</title>
+  <title>Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="login-body">
+<body class="login-page">
 
-<div class="login-card">
-  <h2>Create / Login Account</h2>
+<div class="login-box">
+  <h2>Student Login</h2>
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
+  <input id="userInput" placeholder="Username">
+  <input id="passInput" type="password" placeholder="Password">
 
-  <button onclick="saveUser()">Enter</button>
-
-  <p id="loginMsg"></p>
+  <button id="loginBtn">Login / Register</button>
 </div>
 
 <script>
-function saveUser() {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
+const btn=document.getElementById("loginBtn");
 
-  if (!user || !pass) {
-    document.getElementById("loginMsg").innerText = "Fill all fields";
+btn.onclick=()=>{
+  const u=userInput.value.trim();
+  const p=passInput.value.trim();
+  if(!u||!p) return alert("Enter details");
+
+  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
+
+  if(!users[u]){
+    users[u]=p;
+    alert("Account created");
+  }else if(users[u]!==p){
+    alert("Wrong password");
     return;
   }
 
-  localStorage.setItem("reviseUser", user);
-  localStorage.setItem("revisePass", pass);
-
-  window.location.href = "index.html";
-}
+  localStorage.setItem("rev_users",JSON.stringify(users));
+  localStorage.setItem("rev_current_user",u);
+  location.href="index.html";
+};
 </script>
-
 </body>
 </html>
