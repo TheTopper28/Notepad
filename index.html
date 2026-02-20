@@ -2,32 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Revision Practice</title>
+  <title>Revision Quiz</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header class="app-header">
-  <h1>Revision Practice</h1>
-  <div class="top-right">
-    <span id="counter">0/0</span>
-    <input id="searchBox" placeholder="Search questions">
-    <button id="themeBtn">🌙</button>
+<!-- LOGIN PAGE -->
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+    <h2>Student Login</h2>
+    <input id="userInput" placeholder="Username">
+    <input id="passInput" type="password" placeholder="Password">
+    <button id="loginBtn">Login / Register</button>
   </div>
-</header>
-
-<div class="controls">
-  <select id="subjectSelect"></select>
-  <select id="topicSelect"></select>
 </div>
 
-<div class="question-nav">
-  <button id="prevBtn">⬅ Prev</button>
-  <button id="nextBtn">Next ➡</button>
-  <button id="toggleBtn">Show All</button>
-</div>
+<!-- MAIN APP PAGE -->
+<div id="appPage" class="hidden">
+  <header class="app-header">
+    <h1>Revision Quiz</h1>
+    <div class="top-right">
+      <span id="userName"></span>
+      <span id="counter">0/0</span>
+      <button id="themeBtn">🌙</button>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </header>
 
-<div id="questionArea"></div>
+  <div class="controls">
+    <select id="subjectSelect"></select>
+    <select id="topicSelect"></select>
+  </div>
+
+  <div class="question-nav">
+    <button id="prevBtn">⬅ Prev</button>
+    <button id="nextBtn">Next ➡</button>
+    <button id="toggleBtn">Show All</button>
+  </div>
+
+  <div id="questionArea"></div>
+</div>
 
 <script src="script.js"></script>
 </body>
