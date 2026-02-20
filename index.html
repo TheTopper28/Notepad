@@ -2,38 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Login</title>
+  <title>Revision Practice</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="login-body">
+<body>
 
-<div class="login-card">
-  <h2>Create / Login Account</h2>
+<header>
+  <h1>Revision Practice</h1>
+  <div id="userDisplay"></div>
+</header>
 
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-
-  <button onclick="saveUser()">Enter</button>
-
-  <p id="loginMsg"></p>
+<div class="selectors">
+  <select id="subjectSelect"></select>
+  <select id="topicSelect"></select>
 </div>
 
-<script>
-function saveUser() {
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
+<div class="question-nav">
+  <button id="prevBtn">⬅ Previous</button>
+  <button id="nextBtn">Next ➡</button>
+  <button id="toggleViewBtn">📋 Show All</button>
+</div>
 
-  if (!user || !pass) {
-    document.getElementById("loginMsg").innerText = "Fill all fields";
-    return;
-  }
+<div id="questionContainer"></div>
 
-  localStorage.setItem("reviseUser", user);
-  localStorage.setItem("revisePass", pass);
-
-  window.location.href = "index.html";
-}
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
