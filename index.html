@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revision App</title>
+<title>Revision Quiz</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="loginPage" class="page login-page">
   <div class="login-box">
     <h2>Student Login</h2>
@@ -19,20 +19,37 @@
   </div>
 </div>
 
-<!-- APP PAGE -->
+<!-- APP -->
 <div id="appPage" class="page hidden">
-  <header class="app-header">
-    <h1>Revision Panel</h1>
-    <div>
-      👤 <span id="userName"></span>
-      <button id="logoutBtn">Logout</button>
-    </div>
-  </header>
 
-  <!-- YOUR APP CONTENT HERE -->
-  <div style="padding:40px;text-align:center">
-    Main App Loaded ✔
+<header class="app-header">
+  <h1>Revision Quiz</h1>
+  <div class="header-right">
+    👤 <span id="userName"></span>
+    <button id="modeBtn">Quiz Mode</button>
+    <button id="themeBtn">🌙</button>
+    <button id="markedBtn">⭐</button>
+    <button id="logoutBtn">Logout</button>
   </div>
+</header>
+
+<div class="controls">
+  <select id="subjectSelect"></select>
+  <select id="topicSelect"></select>
+</div>
+
+<div id="quizContainer"></div>
+<div id="allContainer" class="allContainer hidden"></div>
+
+</div>
+
+<!-- MARKED PANEL -->
+<div id="markedPanel" class="marked-panel">
+  <div class="marked-header">
+    <h3>Difficult</h3>
+    <button id="closeMarked">✖</button>
+  </div>
+  <div id="markedList"></div>
 </div>
 
 <script src="app.js"></script>
