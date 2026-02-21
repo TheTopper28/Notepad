@@ -1,30 +1,33 @@
-const loginPage=document.getElementById("loginPage");
-const appPage=document.getElementById("appPage");
-const userName=document.getElementById("userName");
-const loginBtn=document.getElementById("loginBtn");
-const userInput=document.getElementById("userInput");
-const passInput=document.getElementById("passInput");
-const logoutBtn=document.getElementById("logoutBtn");
+const loginPage = document.getElementById("loginPage");
+const appPage = document.getElementById("appPage");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const userName = document.getElementById("userName");
+const userInput = document.getElementById("userInput");
+const passInput = document.getElementById("passInput");
 
-const subjectSelect=document.getElementById("subjectSelect");
-const topicSelect=document.getElementById("topicSelect");
-const questionArea=document.getElementById("questionArea");
-const counter=document.getElementById("counter");
-const themeBtn=document.getElementById("themeBtn");
-const prevBtn=document.getElementById("prevBtn");
-const nextBtn=document.getElementById("nextBtn");
-const toggleBtn=document.getElementById("toggleBtn");
+const subjectSelect = document.getElementById("subjectSelect");
+const topicSelect = document.getElementById("topicSelect");
+const questionArea = document.getElementById("questionArea");
+const counter = document.getElementById("counter");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const modeToggle = document.getElementById("modeToggle");
 
-const diffList=document.getElementById("diffList");
-const difficultPanel=document.getElementById("difficultPanel");
-const toggleDifficultBtn=document.getElementById("toggleDifficultBtn");
-const closePanelBtn=document.getElementById("closePanelBtn");
+const markedToggle = document.getElementById("markedToggle");
+const markedPanel = document.getElementById("markedPanel");
+const closeMarked = document.getElementById("closeMarked");
+const markedList = document.getElementById("markedList");
 
-const data={
+let questions = [];
+let index = 0;
+let singleMode = true;
+
+const data = {
   Mathematics:{
     Algebra:[
       {q:"Solve 2x+5=15",a:"x=5",d:false},
-      {q:"x²−9",a:"(x−3)(x+3)",d:true}
+      {q:"x²-9",a:"(x-3)(x+3)",d:true}
     ],
     Geometry:[
       {q:"Sum of triangle angles?",a:"180°",d:false}
@@ -37,132 +40,127 @@ const data={
   }
 };
 
-let questions=[];
-let index=0;
-let single=true;
+loginBtn.onclick = () => {
+  const u = userInput.value.trim();
+  const p = passInput.value.trim();
+  if(!u || !p) return;
 
-// LOGIN
-loginBtn.onclick=()=>{
-  const u=userInput.value.trim();
-  const p=passInput.value.trim();
-  if(!u||!p)return;
-
-  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
-  if(!users[u])users[u]=p;
-  else if(users[u]!==p)return alert("Wrong password");
-
-  localStorage.setItem("rev_users",JSON.stringify(users));
-  localStorage.setItem("rev_current_user",u);
-
-  loginPage.style.opacity="0";
-  setTimeout(()=>{
-    loginPage.classList.add("hidden");
-    appPage.classList.remove("hidden");
-    userName.textContent="👤 "+u;
-    loadTopics();
-  },400);
+  localStorage.setItem("rev_user", u);
+  startApp(u);
 };
 
-logoutBtn.onclick=()=>{
-  localStorage.removeItem("rev_current_user");
+logoutBtn.onclick = () => {
+  localStorage.removeItem("rev_user");
   location.reload();
 };
 
-const cu=localStorage.getItem("rev_current_user");
-if(cu){
+function startApp(u){
+  userName.textContent = "👤 " + u;
   loginPage.classList.add("hidden");
   appPage.classList.remove("hidden");
-  userName.textContent="👤 "+cu;
+  loadSubjects();
+}
+
+const saved = localStorage.getItem("rev_user");
+if(saved) startApp(saved);
+
+function loadSubjects(){
+  subjectSelect.innerHTML = "";
+  Object.keys(data).forEach(s=>{
+    subjectSelect.innerHTML += `<option>${s}</option>`;
+  });
   loadTopics();
 }
 
-// SUBJECTS
-Object.keys(data).forEach(s=>subjectSelect.innerHTML+=`<option>${s}</option>`);
-subjectSelect.onchange=loadTopics;
-topicSelect.onchange=loadQuestions;
-
 function loadTopics(){
-  topicSelect.innerHTML="";
+  topicSelect.innerHTML = "";
   Object.keys(data[subjectSelect.value]).forEach(t=>{
-    topicSelect.innerHTML+=`<option>${t}</option>`;
+    topicSelect.innerHTML += `<option>${t}</option>`;
   });
   loadQuestions();
 }
 
+subjectSelect.onchange = loadTopics;
+topicSelect.onchange = loadQuestions;
+
 function loadQuestions(){
-  questions=data[subjectSelect.value][topicSelect.value];
-  index=0;
+  questions = data[subjectSelect.value][topicSelect.value];
+  index = 0;
   render();
 }
 
-// RENDER
 function render(){
-  counter.textContent=`${index+1}/${questions.length}`;
+  counter.textContent = questions.length ? `${index+1}/${questions.length}` : "0/0";
 
-  if(single){
-    questionArea.innerHTML=flashCard(questions[index],index);
+  if(singleMode){
+    prevBtn.style.display = "inline-block";
+    nextBtn.style.display = "inline-block";
+
+    const q = questions[index];
+    questionArea.innerHTML = `
+      <div class="card">
+        <span class="star" onclick="toggleMark(${index})">${q.d?"⭐":"☆"}</span>
+        <div>${q.q}</div>
+        <div class="answer">${q.a}</div>
+        <button class="showBtn">Show Answer</button>
+      </div>`;
+
+    attachShow();
   }else{
-    questionArea.innerHTML=questions.map((q,i)=>listCard(q,i)).join("");
+    prevBtn.style.display = "none";
+    nextBtn.style.display = "none";
+
+    questionArea.innerHTML = `<div class="allContainer">
+      ${questions.map((q,i)=>`
+        <div class="allCard">
+          <span class="star" onclick="toggleMark(${i})">${q.d?"⭐":"☆"}</span>
+          <div>${q.q}</div>
+          <div class="answer">${q.a}</div>
+          <button class="showBtn">Show Answer</button>
+        </div>
+      `).join("")}
+    </div>`;
+
+    attachShow();
   }
 
-  attachShow();
-  renderDiff();
-}
-
-function flashCard(q,i){
-  return `<div class="card">
-    <b>${q.q}</b>
-    <span class="star" onclick="toggleDiff(${i})">${q.d?"⭐":"☆"}</span>
-    <div class="answer">${q.a}</div>
-    <button class="showAnswerBtn">Show Answer</button>
-  </div>`;
-}
-
-function listCard(q,i){
-  return `<div class="listCard">
-    <div><b>${i+1}. ${q.q}</b>
-    <span class="star" onclick="toggleDiff(${i})">${q.d?"⭐":"☆"}</span></div>
-    <div class="answer">${q.a}</div>
-    <button class="showAnswerBtn">Show Answer</button>
-  </div>`;
+  updateMarked();
 }
 
 function attachShow(){
-  document.querySelectorAll(".showAnswerBtn").forEach(btn=>{
-    const ans=btn.previousElementSibling;
-    btn.onclick=()=>{
-      const show=ans.style.display==="block";
-      ans.style.display=show?"none":"block";
-      btn.textContent=show?"Show Answer":"Hide Answer";
+  document.querySelectorAll(".showBtn").forEach(btn=>{
+    const ans = btn.previousElementSibling;
+    btn.onclick = ()=>{
+      ans.style.display = ans.style.display==="block"?"none":"block";
     };
   });
 }
 
-function toggleDiff(i){
-  questions[i].d=!questions[i].d;
-  render();
-}
+prevBtn.onclick = ()=>{
+  if(index>0){ index--; render(); }
+};
 
-function renderDiff(){
-  const list=questions.filter(q=>q.d);
-  diffList.innerHTML=list.length
-    ? list.map(q=>`<li>${q.q}</li>`).join("")
-    : "<li>No marked</li>";
-}
+nextBtn.onclick = ()=>{
+  if(index<questions.length-1){ index++; render(); }
+};
 
-// PANEL
-toggleDifficultBtn.onclick=()=>difficultPanel.classList.add("active");
-closePanelBtn.onclick=()=>difficultPanel.classList.remove("active");
-
-// NAV
-prevBtn.onclick=()=>{if(index>0){index--;render();}};
-nextBtn.onclick=()=>{if(index<questions.length-1){index++;render();}};
-
-// MODE
-toggleBtn.onclick=()=>{
-  single=!single;
-  toggleBtn.textContent=single?"Show All":"Single";
+modeToggle.onclick = ()=>{
+  singleMode = !singleMode;
+  modeToggle.textContent = singleMode?"Show All":"Quiz Mode";
   render();
 };
 
-themeBtn.onclick=()=>document.body.classList.toggle("light");
+function toggleMark(i){
+  questions[i].d = !questions[i].d;
+  render();
+}
+
+markedToggle.onclick = ()=> markedPanel.classList.add("open");
+closeMarked.onclick = ()=> markedPanel.classList.remove("open");
+
+function updateMarked(){
+  const marked = questions.filter(q=>q.d);
+  markedList.innerHTML = marked.length
+    ? marked.map(q=>`<div class="markedItem">${q.q}</div>`).join("")
+    : "No marked questions";
+}
