@@ -1,103 +1,68 @@
-let questions = [
-  {q: "What is 2+2?", a: "4", subject: "Math", topic: "Basics"},
-  {q: "Capital of France?", a: "Paris", subject: "Geography", topic: "Europe"},
-  {q: "Who wrote Hamlet?", a: "William Shakespeare", subject: "Literature", topic: "Drama"}
-];
+// redirect if not logged
+const currentUser=localStorage.getItem("rev_current_user");
+if(!currentUser){location.href="login.html";}
 
-let currentIndex = 0;
-let marked = [];
+// show user
+document.getElementById("userName").textContent="👋 "+currentUser;
 
-function login() {
-  const name = document.getElementById("username").value;
-  if(name.trim() === "") return alert("Enter your name!");
-  document.getElementById("login-page").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-  document.getElementById("welcome").innerText = `Welcome, ${name}`;
-  loadSubjects();
-  renderQuestions();
-}
+document.getElementById("logoutBtn").onclick=()=>{
+  localStorage.removeItem("rev_current_user");
+  location.href="login.html";
+};
 
-function loadSubjects() {
-  let subjects = [...new Set(questions.map(q => q.subject))];
-  let subjectSelect = document.getElementById("subject");
-  subjectSelect.innerHTML = subjects.map(s => `<option>${s}</option>`).join("");
-  subjectSelect.onchange = loadTopics;
-  loadTopics();
-}
-
-function loadTopics() {
-  let subject = document.getElementById("subject").value;
-  let topics = [...new Set(questions.filter(q => q.subject === subject).map(q => q.topic))];
-  let topicSelect = document.getElementById("topic");
-  topicSelect.innerHTML = topics.map(t => `<option>${t}</option>`).join("");
-  renderQuestions();
-}
-
-function renderQuestions() {
-  let subject = document.getElementById("subject").value;
-  let topic = document.getElementById("topic").value;
-  let list = document.getElementById("question-list");
-  list.innerHTML = "";
-  questions.filter(q => q.subject === subject && q.topic === topic).forEach((q, i) => {
-    let div = document.createElement("div");
-    div.className = "question";
-    div.innerHTML = `<strong>${q.q}</strong>
-      <button onclick="toggleAnswer(this, '${q.a}')">Show Answer</button>
-      <button onclick="markQuestion(${i})">Mark Difficult</button>`;
-    list.appendChild(div);
-  });
-}
-
-function toggleAnswer(btn, answer) {
-  if(btn.nextElementSibling && btn.nextElementSibling.className === "answer") {
-    btn.nextElementSibling.remove();
-  } else {
-    let ans = document.createElement("div");
-    ans.className = "answer";
-    ans.innerText = answer;
-    btn.insertAdjacentElement("afterend", ans);
+// ===== DATA =====
+const data={
+ Computer:{
+    Chapter4:[
+      {q:"What is the fullform of IDE",a:"Integrated Development Environment"},
+      {q:"If a line begins from '//' it is a _______",a:"Comment line"},
+      {q:"What are variables?",a:"A variable is a portion of memory used to store values."},
+      {q:"What are constants?",a:"A constant is a sequence of characters that have fixed value."},
+      {q:"Define BODMAS",a:"Brackets Of Division Multiplication Addition and Subtraction."},
+      {q:"Give an example of logical operators",a:" '&&' '||'  '!' "},
+      {q:"What are relational operators",a:"They are operators that show comparison i.e. ==,>=,<= etc."}
+    ]
+  },
+  Science:{
+    Physics:[
+      {q:"QUESTIONS NOT YET UPLOADED",a:""}
+    ]
   }
-}
+};
 
-function markQuestion(i) {
-  if(!marked.includes(i)) {
-    marked.push(i);
-    updateMarkedPanel();
-  }
-}
+const subjectSelect=document.getElementById("subjectSelect");
+const topicSelect=document.getElementById("topicSelect");
+const questionArea=document.getElementById("questionArea");
 
-function updateMarkedPanel() {
-  let ul = document.getElementById("marked-list");
-  ul.innerHTML = marked.map(i => `<li>${questions[i].q}</li>`).join("");
-}
-
-function togglePanel() {
-  let panel = document.getElementById("marked-panel");
-  panel.classList.toggle("show");
-}
-
-function toggleTheme() {
-  document.body.classList.toggle("dark");
+// Theme Toggle
+const themeToggle = document.getElementById("themeToggle");
+themeToggle.onclick = () => {
+  document.body.classList.toggle("light");
+  localStorage.setItem("rev_theme", document.body.classList.contains("light") ? "light" : "dark");
+};
+if (localStorage.getItem("rev_theme") === "light") {
+  document.body.classList.add("light");
 }
 
 // Quiz Mode
-function showAnswer() {
-  document.getElementById("quiz-answer").classList.remove("hidden");
+let quizMode = false;
+const quizToggle = document.getElementById("quizToggle");
+quizToggle.onclick = () => {
+  quizMode = !quizMode;
+  quizToggle.textContent = quizMode ? "Practice Mode" : "Quiz Mode";
+  showQuestions();
+};
+
+function populateSubjects(){
+  Object.keys(data).forEach(s=>{
+    const o=document.createElement("option");
+    o.value=s;o.textContent=s;
+    subjectSelect.appendChild(o);
+  });
+  populateTopics();
 }
 
-function nextQuestion() {
-  currentIndex = (currentIndex + 1) % questions.length;
-  loadQuiz();
-}
-
-function prevQuestion() {
-  currentIndex = (currentIndex - 1 + questions.length) % questions.length;
-  loadQuiz();
-}
-
-function loadQuiz() {
-  let q = questions[currentIndex];
-  document.getElementById("quiz-question").innerText = q.q;
-  document.getElementById("quiz-answer").innerText = q.a;
-  document.getElementById("quiz-answer").classList.add("hidden");
-}
+function populateTopics(){
+  topicSelect.innerHTML="";
+  Object.keys(data[subjectSelect.value]).forEach(t=>{
+    const o=document.createElement("option");
