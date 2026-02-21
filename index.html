@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<!-- ADVANCED LOGIN PAGE -->
+<!-- LOGIN PAGE -->
 <div class="login-page" id="loginPage">
   <div class="login-box">
     <h2>Student Login</h2>
@@ -26,6 +26,7 @@
       <span id="userName"></span>
       <span id="counter">0/0</span>
       <button id="themeBtn">🌙</button>
+      <button id="toggleDifficultBtn">⭐ Marked</button>
       <button id="logoutBtn">Logout</button>
     </div>
   </header>
@@ -36,19 +37,22 @@
     <button id="toggleBtn">Show All</button>
   </div>
 
-  <!-- NAV ONLY VISIBLE IN SINGLE MODE -->
+  <div id="questionAreaContainer">
+    <div id="questionArea"></div>
+
+    <!-- DIFFICULT QUESTIONS PANEL -->
+    <div id="difficultPanel">
+      <h3>⭐ Difficult Questions</h3>
+      <ul id="diffList"></ul>
+    </div>
+  </div>
+
+  <!-- NAV BELOW QUESTIONS -->
   <div class="question-nav" id="navButtons">
     <button id="prevBtn">⬅ Prev</button>
     <button id="nextBtn">Next ➡</button>
   </div>
 
-  <div id="questionArea"></div>
-
-  <!-- DIFFICULT QUESTIONS PANEL -->
-  <div id="difficultPanel">
-    <h3>⭐ Difficult Questions</h3>
-    <ul id="diffList"></ul>
-  </div>
 </div>
 
 <script src="script.js"></script>
