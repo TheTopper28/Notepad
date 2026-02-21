@@ -1,224 +1,143 @@
-:root{
-  --bg:#020617;
-  --panel:#0f172a;
-  --text:#e5e7eb;
-  --accent:#6366f1;
-  --accent2:#06b6d4;
+:root {
+  --bg: #0f111a;
+  --card: #1c1f2b;
+  --text: #fff;
+  --accent: #6c8cff;
 }
 
-body.light{
-  --bg:#f1f5f9;
-  --panel:#ffffff;
-  --text:#0f172a;
+.light {
+  --bg: #f2f3f7;
+  --card: #ffffff;
+  --text: #111;
 }
 
-body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  overflow:hidden;
+body {
+  margin: 0;
+  font-family: Arial;
+  background: var(--bg);
+  color: var(--text);
 }
 
-.page{position:absolute;inset:0;}
-.hidden{display:none}
+.hidden {
+  display: none;
+}
 
 /* LOGIN */
-.login-page{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#6366f1,#06b6d4);
+.centerPage {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.login-box{
-  background:var(--panel);
-  padding:34px;
-  border-radius:18px;
-  text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
+.loginBox {
+  background: var(--card);
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
 }
 
-.login-box input{
-  display:block;
-  width:260px;
-  margin:12px auto;
-  padding:12px;
-  border-radius:10px;
-  border:none;
+.loginBox input {
+  padding: 10px;
+  margin: 10px 0;
+  width: 200px;
 }
-
-.login-box button{
-  margin-top:8px;
-  padding:12px 22px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(90deg,#6366f1,#06b6d4);
-  color:white;
-}
-
-.reset-btn{background:#ef4444}
 
 /* HEADER */
-.app-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 22px;
-  background:linear-gradient(270deg,#6366f1,#06b6d4,#6366f1);
-  background-size:400% 400%;
-  animation:flow 10s linear infinite;
+header {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(270deg,#6c8cff,#8a5cff,#6c8cff);
+  background-size: 400% 400%;
+  animation: gradient 8s linear infinite;
 }
 
-@keyframes flow{
-  0%{background-position:0%}
-  100%{background-position:100%}
+@keyframes gradient {
+  0% {background-position:0%}
+  100% {background-position:100%}
 }
 
-.top-right button{
-  margin-left:8px;
-  padding:8px 14px;
-  border:none;
-  border-radius:8px;
-  background:rgba(255,255,255,.15);
-  color:white;
+.controls {
+  margin-top: 10px;
 }
 
-/* CONTROLS */
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  padding:14px;
+.controls select,
+.controls button {
+  margin: 5px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
 }
 
-select{
-  padding:10px 14px;
-  border-radius:10px;
-  border:none;
+/* MAIN */
+main {
+  padding: 30px;
 }
 
-/* QUIZ CONTAINER */
-#quizContainer{
-  height:calc(100vh - 130px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+/* ALL QUESTIONS */
+.questionCard {
+  background: var(--card);
+  margin-bottom: 20px;
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 900px;
 }
 
-/* QUIZ CARD — slightly smaller */
-.card{
-  width:min(700px,90%);
-  min-height:300px;
-  padding:38px 36px;
-  border-radius:24px;
-  background:linear-gradient(145deg,#0f172a,#020617);
-  box-shadow:0 20px 50px rgba(0,0,0,.55);
-  text-align:center;
-  font-size:1.6rem;
-  line-height:1.45;
-  position:relative;
-  animation:slide .35s ease;
+.questionText {
+  font-size: 18px;
+  margin-bottom: 15px;
 }
 
-@keyframes slide{
-  from{transform:translateX(60px);opacity:0}
-  to{transform:translateX(0);opacity:1}
+.answer {
+  margin-top: 10px;
+  display: none;
 }
 
-/* SHOW ANSWER BUTTON — directly below question */
-.showBtn{
-  margin-top:20px;
-  padding:10px 20px;
-  border:none;
-  border-radius:10px;
-  background:linear-gradient(90deg,#6366f1,#06b6d4);
-  color:white;
-  cursor:pointer;
+.showBtn {
+  margin-top: 10px;
 }
 
-.answer{
-  margin-top:16px;
-  padding:14px;
-  background:rgba(99,102,241,.15);
-  border-left:4px solid var(--accent);
-  border-radius:10px;
-  display:none;
-  font-size:1.2rem;
+/* QUIZ MODE FLASHCARD */
+.quizCard {
+  background: var(--card);
+  padding: 30px;
+  border-radius: 14px;
+  max-width: 750px;
+  margin: 40px auto;
+  text-align: center;
 }
 
-.navBtns{
-  margin-top:24px;
-  display:flex;
-  gap:24px;
-  justify-content:center;
+.quizQuestion {
+  font-size: 20px;
+  margin-bottom: 15px;
 }
 
-.navBtns button{
-  padding:12px 28px;
-  border:none;
-  border-radius:12px;
-  background:linear-gradient(90deg,#6366f1,#06b6d4);
-  color:white;
-  font-size:1.05rem;
-  font-weight:600;
-  box-shadow:0 8px 20px rgba(99,102,241,.35);
+.quizButtons {
+  margin-top: 20px;
 }
 
-.star{
-  position:absolute;
-  top:12px;
-  right:16px;
-  font-size:1.5rem;
-  cursor:pointer;
-}
-
-/* SHOW ALL — attractive cards */
-.allContainer{
-  width:min(850px,92%);
-  height:100%;
-  overflow:auto;
-  padding:22px;
-}
-
-.allCard{
-  background:linear-gradient(145deg,#0f172a,#020617);
-  padding:24px 26px;
-  border-radius:18px;
-  margin-bottom:18px;
-  position:relative;
-  font-size:1.15rem;
-  box-shadow:0 12px 28px rgba(0,0,0,.45);
-  transition:.2s;
-}
-
-.allCard:hover{
-  transform:translateY(-2px);
-  box-shadow:0 16px 34px rgba(0,0,0,.55);
+.quizButtons button {
+  padding: 12px 20px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
 }
 
 /* MARKED PANEL */
-.marked-panel{
-  position:fixed;
-  top:0;
-  right:-360px;
-  width:360px;
-  height:100%;
-  background:var(--panel);
-  transition:.35s;
-  box-shadow:-10px 0 30px rgba(0,0,0,.6);
+#markedPanel {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100%;
+  background: var(--card);
+  padding: 20px;
+  transition: 0.3s;
 }
 
-.marked-panel.open{right:0}
-
-.marked-header{
-  display:flex;
-  justify-content:space-between;
-  padding:14px;
-  border-bottom:1px solid #1e293b;
-}
-
-#markedList{
-  padding:14px;
-  overflow:auto;
+#markedPanel.open {
+  right: 0;
 }
