@@ -1,8 +1,63 @@
-// LOGIN CHECK
-const user = localStorage.getItem("activeUser");
-if(!user) location.href="login.html";
-document.getElementById("userName").textContent=user;
+// ================= LOGIN SYSTEM =================
+document.addEventListener("DOMContentLoaded",()=>{
 
+const loginPage=document.getElementById("loginPage");
+const appPage=document.getElementById("appPage");
+const loginBtn=document.getElementById("loginBtn");
+const resetBtn=document.getElementById("resetBtn");
+const nameInput=document.getElementById("nameInput");
+const passInput=document.getElementById("passInput");
+const error=document.getElementById("loginError");
+const userName=document.getElementById("userName");
+
+// LOGIN / REGISTER
+loginBtn.onclick=()=>{
+  const name=nameInput.value.trim();
+  const pass=passInput.value.trim();
+
+  if(!name || !pass){
+    error.textContent="Enter username & password";
+    return;
+  }
+
+  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
+
+  if(!users[name]){
+    users[name]=pass;
+    localStorage.setItem("rev_users",JSON.stringify(users));
+  }
+  else if(users[name]!==pass){
+    error.textContent="Wrong password";
+    return;
+  }
+
+  localStorage.setItem("rev_current_user",name);
+  showApp(name);
+};
+
+// SHOW APP
+function showApp(name){
+  loginPage.style.display="none";
+  appPage.classList.remove("hidden");
+  userName.textContent=name;
+}
+
+// AUTO LOGIN
+const savedUser=localStorage.getItem("rev_current_user");
+if(savedUser){
+  showApp(savedUser);
+}
+
+// RESET
+if(resetBtn){
+  resetBtn.onclick=()=>{
+    localStorage.clear();
+    alert("Accounts cleared");
+    location.reload();
+  };
+}
+
+});
 // LOGOUT
 logoutBtn.onclick=()=>{
   localStorage.removeItem("activeUser");
