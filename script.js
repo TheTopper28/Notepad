@@ -56,8 +56,14 @@ logoutBtn.onclick = () => {
 
 function startApp(u){
   userName.textContent = "👤 " + u;
-  loginPage.classList.add("hidden");
+
+  // REMOVE LOGIN COMPLETELY
+  loginPage.style.display = "none";
+
+  // SHOW APP
   appPage.classList.remove("hidden");
+  appPage.style.display = "block";
+
   loadSubjects();
 }
 
