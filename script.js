@@ -46,10 +46,12 @@ if (localStorage.getItem("rev_theme") === "light") {
 
 // ===== QUIZ MODE =====
 let quizMode = false;
+let currentIndex = 0;
 const quizToggle = document.getElementById("quizToggle");
 quizToggle.onclick = () => {
   quizMode = !quizMode;
   quizToggle.textContent = quizMode ? "Practice Mode" : "Quiz Mode";
+  currentIndex = 0;
   showQuestions();
 };
 
@@ -79,29 +81,47 @@ function populateTopics() {
 function showQuestions() {
   questionArea.innerHTML = "";
   const list = data[subjectSelect.value][topicSelect.value];
-  list.forEach((it, i) => {
-    const card = document.createElement("div");
-    card.className = "question-card";
 
-    if (quizMode) {
-      // Quiz Mode: multiple choice
-      const options = [it.a, "Option A", "Option B", "Option C"].sort(() => Math.random() - 0.5);
-      card.innerHTML = `<div>Q${i + 1}. ${it.q}</div>`;
-      options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt;
-        btn.className = "show-btn";
-        btn.onclick = () => {
-          if (opt === it.a) {
-            btn.style.background = "linear-gradient(135deg,#22c55e,#16a34a)";
-          } else {
-            btn.style.background = "linear-gradient(135deg,#ef4444,#dc2626)";
-          }
-        };
-        card.appendChild(btn);
-      });
-    } else {
-      // Practice Mode: show answer
+  if (quizMode) {
+    // Quiz Mode: one question at a time
+    const it = list[currentIndex];
+    const card = document.createElement("div");
+    card.className = "question-card fade";
+    card.innerHTML = `
+      <div>Q${currentIndex + 1}. ${it.q}</div>
+      <button class="show-btn">Show Answer</button>
+      <div class="answer">${it.a}</div>
+      <div class="nav-buttons">
+        <button id="prevBtn" class="show-btn">Previous</button>
+        <button id="nextBtn" class="show-btn">Next</button>
+      </div>
+    `;
+    const b = card.querySelector(".show-btn");
+    const a = card.querySelector(".answer");
+    b.onclick = () => {
+      a.style.display = a.style.display === "block" ? "none" : "block";
+    };
+    questionArea.appendChild(card);
+
+    // Navigation
+    document.getElementById("prevBtn").onclick = () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        transitionQuestion();
+      }
+    };
+    document.getElementById("nextBtn").onclick = () => {
+      if (currentIndex < list.length - 1) {
+        currentIndex++;
+        transitionQuestion();
+      }
+    };
+
+  } else {
+    // Practice Mode: all questions at once
+    list.forEach((it, i) => {
+      const card = document.createElement("div");
+      card.className = "question-card";
       card.innerHTML = `
         <div>Q${i + 1}. ${it.q}</div>
         <button class="show-btn">Show Answer</button>
@@ -112,10 +132,18 @@ function showQuestions() {
       b.onclick = () => {
         a.style.display = a.style.display === "block" ? "none" : "block";
       };
-    }
+      questionArea.appendChild(card);
+    });
+  }
+}
 
-    questionArea.appendChild(card);
-  });
+// Smooth transition when switching questions
+function transitionQuestion() {
+  questionArea.classList.add("fade-out");
+  setTimeout(() => {
+    showQuestions();
+    questionArea.classList.remove("fade-out");
+  }, 300);
 }
 
 // ===== EVENT BINDINGS =====
