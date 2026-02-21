@@ -176,6 +176,9 @@ body.light .answer {
   background: rgba(99,102,241,.1);
   color: #1e293b;
 }
+
+/* ... existing styles ... */
+
 /* Fade transition for quiz mode */
 .fade {
   animation: fadeIn 0.3s ease;
@@ -201,4 +204,3 @@ body.light .answer {
   display: flex;
   justify-content: space-between;
 }
-
