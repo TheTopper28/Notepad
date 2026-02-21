@@ -2,6 +2,7 @@ const loginPage=document.getElementById("loginPage");
 const appPage=document.getElementById("appPage");
 const loginBtn=document.getElementById("loginBtn");
 const nameInput=document.getElementById("nameInput");
+const passInput=document.getElementById("passInput");
 const userName=document.getElementById("userName");
 
 const subjectSelect=document.getElementById("subjectSelect");
@@ -10,17 +11,37 @@ const area=document.getElementById("questionArea");
 
 const quizBtn=document.getElementById("quizModeBtn");
 const allBtn=document.getElementById("allModeBtn");
+const themeBtn=document.getElementById("themeBtn");
 
 let currentQuestions=[];
 let index=0;
 
-/* LOGIN */
+/* LOGIN WITH PASSWORD */
 loginBtn.onclick=()=>{
-  const name=nameInput.value.trim();
-  if(!name)return;
-  userName.textContent=name;
+  const u=nameInput.value.trim();
+  const p=passInput.value.trim();
+  if(!u||!p){alert("Enter username & password");return;}
+
+  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
+
+  if(!users[u]){
+    users[u]=p;
+    alert("Account created");
+  }else if(users[u]!==p){
+    alert("Wrong password");
+    return;
+  }
+
+  localStorage.setItem("rev_users",JSON.stringify(users));
+  userName.textContent=u;
+
   loginPage.classList.add("hidden");
   appPage.classList.remove("hidden");
+};
+
+/* THEME */
+themeBtn.onclick=()=>{
+  document.body.classList.toggle("light");
 };
 
 /* DATA */
@@ -57,6 +78,7 @@ function loadTopics(){
 
 function loadQuestions(){
   currentQuestions=data[subjectSelect.value][topicSelect.value];
+  index=0;
   showQuiz();
 }
 
