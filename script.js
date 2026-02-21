@@ -51,24 +51,37 @@ loginBtn.onclick = () => {
   const p = passInput.value.trim();
   if(!u || !p){ alert("Enter details"); return; }
   let users = JSON.parse(localStorage.getItem("rev_users") || "{}");
-  if(!users[u]){ users[u]=p; alert("Account created"); }
-  else if(users[u]!==p){ alert("Wrong password"); return; }
+  if(!users[u]){ users[u] = p; alert("Account created"); }
+  else if(users[u] !== p){ alert("Wrong password"); return; }
   localStorage.setItem("rev_users", JSON.stringify(users));
   localStorage.setItem("rev_current_user", u);
   startApp(u);
 };
 
-// ===== START APP WITH LOGIN TRANSITION =====
+// ===== START APP WITH SAFE TRANSITION =====
 function startApp(u){
+  loginPage.style.transition = "opacity 0.5s ease, transform 0.5s ease";
   loginPage.style.opacity = "0";
   loginPage.style.transform = "scale(0.95)";
-  setTimeout(()=>{
+
+  setTimeout(() => {
     loginPage.classList.add("hidden");
+
+    // Show app page
     appPage.classList.remove("hidden");
-    void appPage.offsetWidth; // trigger reflow
-    appPage.classList.add("active");
-    userName.textContent = "👤 "+u;
-  }, 400);
+    appPage.style.opacity = "0";
+    appPage.style.transform = "scale(0.95)";
+    void appPage.offsetWidth; // force reflow
+
+    appPage.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+    appPage.style.opacity = "1";
+    appPage.style.transform = "scale(1)";
+
+    userName.textContent = "👤 " + u;
+
+    // First render of questions after page visible
+    loadTopics();
+  }, 500);
 }
 
 // ===== LOGOUT =====
@@ -99,10 +112,10 @@ function loadTopics(){
 function loadQuestions(){
   questions = data[subjectSelect.value][topicSelect.value];
   index = 0;
-  render(); // first render
+  render();
 }
 
-// ===== RENDER QUESTIONS WITH SLIDE ANIMATION =====
+// ===== RENDER QUESTIONS =====
 function render(direction="next"){
   if(animating) return;
   counter.textContent = `${index+1}/${questions.length}`;
@@ -121,21 +134,18 @@ function render(direction="next"){
 
   if(oldCard){
     animating = true;
-    // Add exit animation
     oldCard.classList.add("exit","exit-active");
 
-    // Enter animation for new card
     newCard.classList.add("enter");
-    void newCard.offsetWidth; // force reflow
+    void newCard.offsetWidth;
     newCard.classList.add("enter-active");
 
-    setTimeout(()=>{
+    setTimeout(() => {
       if(oldCard) oldCard.remove();
       newCard.classList.remove("enter","enter-active");
       animating = false;
     }, 500);
   } else {
-    // First card, show immediately
     newCard.style.opacity = 1;
     newCard.style.transform = "translateX(0)";
   }
@@ -150,7 +160,6 @@ function singleCardHTML(qObj,i){
     <div class="answer">${qObj.a}</div>
     <button class="showAnswerBtn">Show/Hide Answer</button>`;
 }
-
 function multiCardHTML(qObj,i){
   return `<b>${qObj.q}</b>
     <span class="star" onclick="toggleDiff(${i})">${qObj.d?"⭐":"☆"}</span>
@@ -176,7 +185,7 @@ function toggleDiff(i){
 function renderDifficultPanel(){
   const difficultQs = questions.filter(q => q.d);
   diffList.innerHTML = difficultQs.length>0
-    ? difficultQs.map(q=>`<li>${q.q}</li>`).join('')
+    ? difficultQs.map(q => `<li>${q.q}</li>`).join('')
     : "<li>No difficult questions marked</li>";
 }
 toggleDifficultBtn.onclick = () => difficultPanel.classList.toggle("active");
