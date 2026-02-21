@@ -1,22 +1,38 @@
-// ================= LOGIN SYSTEM =================
-document.addEventListener("DOMContentLoaded",()=>{
+// ========= DATA =========
+const data={
+  Mathematics:{
+    Algebra:[
+      {q:"Solve 2x+5=15",a:"x=5",d:false},
+      {q:"Factor x²-9",a:"(x-3)(x+3)",d:true}
+    ],
+    Geometry:[
+      {q:"Sum of triangle angles?",a:"180°",d:false}
+    ]
+  },
+  Science:{
+    Physics:[
+      {q:"Unit of force?",a:"Newton",d:false}
+    ]
+  }
+};
 
+// ========= LOGIN =========
 const loginPage=document.getElementById("loginPage");
 const appPage=document.getElementById("appPage");
 const loginBtn=document.getElementById("loginBtn");
 const resetBtn=document.getElementById("resetBtn");
+const logoutBtn=document.getElementById("logoutBtn");
 const nameInput=document.getElementById("nameInput");
 const passInput=document.getElementById("passInput");
-const error=document.getElementById("loginError");
+const loginError=document.getElementById("loginError");
 const userName=document.getElementById("userName");
 
-// LOGIN / REGISTER
 loginBtn.onclick=()=>{
   const name=nameInput.value.trim();
   const pass=passInput.value.trim();
 
-  if(!name || !pass){
-    error.textContent="Enter username & password";
+  if(!name||!pass){
+    loginError.textContent="Enter details";
     return;
   }
 
@@ -27,7 +43,7 @@ loginBtn.onclick=()=>{
     localStorage.setItem("rev_users",JSON.stringify(users));
   }
   else if(users[name]!==pass){
-    error.textContent="Wrong password";
+    loginError.textContent="Wrong password";
     return;
   }
 
@@ -35,139 +51,136 @@ loginBtn.onclick=()=>{
   showApp(name);
 };
 
-// SHOW APP
 function showApp(name){
   loginPage.style.display="none";
   appPage.classList.remove("hidden");
   userName.textContent=name;
 }
 
-// AUTO LOGIN
 const savedUser=localStorage.getItem("rev_current_user");
-if(savedUser){
-  showApp(savedUser);
-}
+if(savedUser) showApp(savedUser);
 
-// RESET
-if(resetBtn){
-  resetBtn.onclick=()=>{
-    localStorage.clear();
-    alert("Accounts cleared");
-    location.reload();
-  };
-}
+resetBtn.onclick=()=>{
+  localStorage.clear();
+  location.reload();
+};
 
-});
-// LOGOUT
 logoutBtn.onclick=()=>{
-  localStorage.removeItem("activeUser");
-  location.href="login.html";
+  localStorage.removeItem("rev_current_user");
+  location.reload();
 };
 
-// SAMPLE QUESTIONS (YOU EDIT HERE)
-const data={
-  Math:{
-    Algebra:[
-      {q:"2x+3=7",a:"x=2"},
-      {q:"3x=12",a:"x=4"}
-    ]
-  },
-  Science:{
-    Physics:[
-      {q:"Unit of force?",a:"Newton"}
-    ]
-  }
-};
-
+// ========= QUIZ =========
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 const quizContainer=document.getElementById("quizContainer");
+const modeBtn=document.getElementById("modeBtn");
+const markedBtn=document.getElementById("markedBtn");
+const markedPanel=document.getElementById("markedPanel");
+const closeMarked=document.getElementById("closeMarked");
+const markedList=document.getElementById("markedList");
 
-let mode="quiz";
-let current=0;
-let marked=[];
+let questions=[];
+let index=0;
+let quizMode=true;
 
-function loadSubjects(){
-  subjectSelect.innerHTML="";
-  Object.keys(data).forEach(s=>{
-    subjectSelect.innerHTML+=`<option>${s}</option>`;
-  });
-  loadTopics();
-}
-
-function loadTopics(){
-  const s=subjectSelect.value;
-  topicSelect.innerHTML="";
-  Object.keys(data[s]).forEach(t=>{
-    topicSelect.innerHTML+=`<option>${t}</option>`;
-  });
-  render();
-}
+// subjects
+Object.keys(data).forEach(s=>{
+  subjectSelect.innerHTML+=`<option>${s}</option>`;
+});
 
 subjectSelect.onchange=loadTopics;
-topicSelect.onchange=render;
+topicSelect.onchange=loadQuestions;
 
-modeToggle.onclick=()=>{
-  mode=mode==="quiz"?"all":"quiz";
+function loadTopics(){
+  topicSelect.innerHTML="";
+  Object.keys(data[subjectSelect.value]).forEach(t=>{
+    topicSelect.innerHTML+=`<option>${t}</option>`;
+  });
+  loadQuestions();
+}
+
+function loadQuestions(){
+  questions=data[subjectSelect.value][topicSelect.value];
+  index=0;
+  render();
+}
+
+function render(){
+  if(quizMode){
+    const q=questions[index];
+    quizContainer.innerHTML=`
+      <div class="card">
+        ${q.q}
+        <span class="star">${q.d?"⭐":"☆"}</span>
+        <div class="answer">${q.a}</div>
+        <button class="showBtn">Show Answer</button>
+        <div class="navBtns">
+          <button id="prevBtn">Prev</button>
+          <button id="nextBtn">Next</button>
+        </div>
+      </div>
+    `;
+  }else{
+    quizContainer.innerHTML=`<div class="allContainer">${
+      questions.map((q,i)=>`
+        <div class="allCard">
+          ${q.q}
+          <span class="star">${q.d?"⭐":"☆"}</span>
+          <div class="answer">${q.a}</div>
+          <button class="showBtn">Show Answer</button>
+        </div>
+      `).join("")
+    }</div>`;
+  }
+
+  attachEvents();
+}
+
+function attachEvents(){
+  document.querySelectorAll(".showBtn").forEach(btn=>{
+    btn.onclick=()=>{
+      const ans=btn.previousElementSibling;
+      ans.style.display=ans.style.display==="block"?"none":"block";
+    };
+  });
+
+  document.querySelectorAll(".star").forEach((s,i)=>{
+    s.onclick=()=>{
+      questions[i].d=!questions[i].d;
+      render();
+      updateMarked();
+    };
+  });
+
+  const prev=document.getElementById("prevBtn");
+  const next=document.getElementById("nextBtn");
+
+  if(prev) prev.onclick=()=>{if(index>0) index--; render();};
+  if(next) next.onclick=()=>{if(index<questions.length-1) index++; render();};
+}
+
+// mode toggle
+modeBtn.onclick=()=>{
+  quizMode=!quizMode;
+  modeBtn.textContent=quizMode?"Quiz Mode":"Show All";
   render();
 };
 
-themeToggle.onclick=()=>{
-  document.body.classList.toggle("light");
+// marked panel
+markedBtn.onclick=()=>{
+  markedPanel.classList.add("open");
+  updateMarked();
 };
 
-markedToggle.onclick=()=>{
-  markedPanel.classList.add("open");
-};
 closeMarked.onclick=()=>{
   markedPanel.classList.remove("open");
 };
 
-function render(){
-  const q=data[subjectSelect.value][topicSelect.value];
-
-  if(mode==="all"){
-    quizContainer.innerHTML="";
-    q.forEach((x,i)=>{
-      quizContainer.innerHTML+=`
-        <div class="card">
-          ${x.q}
-          <div class="answer">${x.a}</div>
-          <button onclick="this.previousElementSibling.style.display='block'">
-            Show Answer
-          </button>
-        </div>
-      `;
-    });
-  }else{
-    const x=q[current];
-    quizContainer.innerHTML=`
-      <div class="card">
-        ${x.q}
-        <div class="answer">${x.a}</div>
-        <button onclick="this.previousElementSibling.style.display='block'">
-          Show Answer
-        </button>
-
-        <div class="navBtns">
-          <button onclick="prev()">Prev</button>
-          <button onclick="next()">Next</button>
-        </div>
-      </div>
-    `;
-  }
+function updateMarked(){
+  const marked=questions.filter(q=>q.d);
+  markedList.innerHTML=marked.map(q=>`<div>${q.q}</div>`).join("");
 }
 
-function next(){
-  const q=data[subjectSelect.value][topicSelect.value];
-  current=(current+1)%q.length;
-  render();
-}
-
-function prev(){
-  const q=data[subjectSelect.value][topicSelect.value];
-  current=(current-1+q.length)%q.length;
-  render();
-}
-
-loadSubjects();
+// init
+loadTopics();
