@@ -95,6 +95,7 @@ function showQuestions() {
         <button id="prevBtn" class="show-btn">Previous</button>
         <button id="nextBtn" class="show-btn">Next</button>
       </div>
+      <div class="progress">Question ${currentIndex + 1} of ${list.length}</div>
     `;
     const b = card.querySelector(".show-btn");
     const a = card.querySelector(".answer");
