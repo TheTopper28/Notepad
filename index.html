@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exam Revision</title>
+<title>Revision App</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,43 +11,28 @@
 <!-- LOGIN PAGE -->
 <div id="loginPage" class="page login-page">
   <div class="login-box">
-    <h2>Revision Login</h2>
-    <input id="nameInput" placeholder="Your name">
+    <h2>Student Login</h2>
+    <input id="nameInput" placeholder="Username">
     <input id="passInput" type="password" placeholder="Password">
-    <button onclick="login()">Enter</button>
+    <button id="loginBtn">Login / Register</button>
     <p id="loginError" class="error"></p>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP PAGE -->
 <div id="appPage" class="page hidden">
+  <header class="app-header">
+    <h1>Revision Panel</h1>
+    <div>
+      👤 <span id="userName"></span>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </header>
 
-<header class="app-header">
-  <h1>Revision Panel</h1>
-  <div class="user">👤 <span id="userName"></span></div>
-</header>
-
-<div class="controls">
-  <select id="subjectSelect"></select>
-  <select id="topicSelect"></select>
-
-  <button id="modeBtn" onclick="toggleMode()">Quiz Mode</button>
-  <button onclick="toggleTheme()">🌙</button>
-  <button onclick="toggleMarked()">⭐</button>
-</div>
-
-<div id="quizContainer"></div>
-<div id="allContainer" class="allContainer hidden"></div>
-
-</div>
-
-<!-- MARKED PANEL -->
-<div id="markedPanel" class="marked-panel">
-  <div class="marked-header">
-    <h3>⭐ Difficult</h3>
-    <button onclick="toggleMarked()">✖</button>
+  <!-- YOUR APP CONTENT HERE -->
+  <div style="padding:40px;text-align:center">
+    Main App Loaded ✔
   </div>
-  <div id="markedList"></div>
 </div>
 
 <script src="app.js"></script>
