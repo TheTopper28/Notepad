@@ -70,6 +70,12 @@ logoutBtn.onclick=()=>{
   location.reload();
 };
 
+// ========= THEME =========
+const themeBtn=document.getElementById("themeBtn");
+themeBtn.onclick=()=>{
+  document.body.classList.toggle("light");
+};
+
 // ========= QUIZ =========
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
@@ -84,7 +90,6 @@ let questions=[];
 let index=0;
 let quizMode=true;
 
-// subjects
 Object.keys(data).forEach(s=>{
   subjectSelect.innerHTML+=`<option>${s}</option>`;
 });
@@ -116,14 +121,14 @@ function render(){
         <div class="answer">${q.a}</div>
         <button class="showBtn">Show Answer</button>
         <div class="navBtns">
-          <button id="prevBtn">Prev</button>
+          <button id="prevBtn">Previous</button>
           <button id="nextBtn">Next</button>
         </div>
       </div>
     `;
   }else{
     quizContainer.innerHTML=`<div class="allContainer">${
-      questions.map((q,i)=>`
+      questions.map(q=>`
         <div class="allCard">
           ${q.q}
           <span class="star">${q.d?"⭐":"☆"}</span>
@@ -160,14 +165,12 @@ function attachEvents(){
   if(next) next.onclick=()=>{if(index<questions.length-1) index++; render();};
 }
 
-// mode toggle
 modeBtn.onclick=()=>{
   quizMode=!quizMode;
   modeBtn.textContent=quizMode?"Quiz Mode":"Show All";
   render();
 };
 
-// marked panel
 markedBtn.onclick=()=>{
   markedPanel.classList.add("open");
   updateMarked();
@@ -182,5 +185,4 @@ function updateMarked(){
   markedList.innerHTML=marked.map(q=>`<div>${q.q}</div>`).join("");
 }
 
-// init
 loadTopics();
