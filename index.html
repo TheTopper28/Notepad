@@ -1,44 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revision App</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Exam Revision App</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<!-- LOGIN -->
-<div id="loginPage" class="page login-bg">
-  <div class="login-box">
-    <h2>Revision Login</h2>
-    <input id="nameInput" placeholder="Username">
-    <input id="passInput" type="password" placeholder="Password">
-    <button id="loginBtn">Login / Register</button>
-  </div>
-</div>
-
-<!-- MAIN APP -->
-<div id="appPage" class="page hidden">
-
-  <header class="app-header">
-    <div class="user">👋 <span id="userName"></span></div>
-    <h1>Revision Practice</h1>
-  </header>
-
-  <div class="controls">
-    <select id="subjectSelect"></select>
-    <select id="topicSelect"></select>
-
-    <button id="quizModeBtn">Quiz</button>
-    <button id="allModeBtn">All</button>
-    <button id="themeBtn">🌙</button>
+  <!-- Login Page -->
+  <div id="login-page">
+    <h1 class="gradient-header">Exam Revision Portal</h1>
+    <input type="text" id="username" placeholder="Enter your name">
+    <button onclick="login()">Login</button>
   </div>
 
-  <div id="questionArea"></div>
+  <!-- Main App -->
+  <div id="app" class="hidden">
+    <header class="gradient-header">
+      <h2 id="welcome"></h2>
+      <div class="controls">
+        <select id="subject"></select>
+        <select id="topic"></select>
+        <button onclick="toggleTheme()">Toggle Theme</button>
+        <button onclick="togglePanel()">Marked Questions</button>
+      </div>
+    </header>
 
-</div>
+    <!-- Question Modes -->
+    <div id="question-list" class="mode"></div>
+    <div id="quiz-mode" class="mode hidden">
+      <div id="quiz-question"></div>
+      <div id="quiz-answer" class="hidden"></div>
+      <div class="quiz-controls">
+        <button onclick="prevQuestion()">Previous</button>
+        <button onclick="showAnswer()">Show Answer</button>
+        <button onclick="nextQuestion()">Next</button>
+      </div>
+    </div>
 
-<script src="script.js"></script>
+    <!-- Sliding Panel -->
+    <div id="marked-panel" class="panel hidden">
+      <h3>Marked Difficult Questions</h3>
+      <ul id="marked-list"></ul>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
