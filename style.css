@@ -204,3 +204,46 @@ body.light .answer {
   display: flex;
   justify-content: space-between;
 }
+/* Quiz mode bigger panel */
+.quiz-mode {
+  font-size: 1.1rem;       /* larger text */
+  padding: 28px;           /* bigger panel */
+}
+
+/* Quiz question text */
+.quiz-question {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+/* Bigger answer in quiz mode */
+.quiz-answer {
+  font-size: 1.1rem;
+  padding: 10px;
+}
+
+/* Navigation buttons layout */
+.nav-buttons {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Place Previous button left, Next button right */
+#prevBtn {
+  margin-right: auto;
+}
+
+#nextBtn {
+  margin-left: auto;
+}
+
+/* Progress indicator */
+.progress {
+  margin-top: 12px;
+  font-size: 1rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
