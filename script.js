@@ -16,7 +16,7 @@ const themeBtn=document.getElementById("themeBtn");
 let currentQuestions=[];
 let index=0;
 
-/* LOGIN WITH PASSWORD */
+/* LOGIN */
 loginBtn.onclick=()=>{
   const u=nameInput.value.trim();
   const p=passInput.value.trim();
