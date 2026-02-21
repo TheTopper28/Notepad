@@ -12,22 +12,21 @@
   --text:#0f172a;
 }
 
-body{
-  margin:0;
-  font-family:Arial;
-  background:var(--bg);
-  color:var(--text);
-  overflow-x:hidden;
+body {
+  margin: 0;
+  font-family: Arial;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  overflow-y: hidden; /* prevent scroll */
+  height: 100vh; /* ensure full viewport height */
 }
 
-/* LOGIN PAGE */
-.login-page{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
-  background:linear-gradient(135deg,#6366f1,#06b6d4);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 .login-box{
