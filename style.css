@@ -1,143 +1,161 @@
-:root {
-  --bg: #0f111a;
-  --card: #1c1f2b;
-  --text: #fff;
-  --accent: #6c8cff;
+:root{
+  --bg:#020617;
+  --panel:#0f172a;
+  --accent:#6366f1;
+  --accent2:#06b6d4;
+  --text:#e5e7eb;
 }
 
-.light {
-  --bg: #f2f3f7;
-  --card: #ffffff;
-  --text: #111;
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:radial-gradient(circle at top,#0f172a,#020617 70%);
+  color:var(--text);
 }
 
-body {
-  margin: 0;
-  font-family: Arial;
-  background: var(--bg);
-  color: var(--text);
+.page{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.hidden {
-  display: none;
-}
+.hidden{display:none}
 
 /* LOGIN */
-.centerPage {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.login-box{
+  background:var(--panel);
+  padding:30px;
+  border-radius:16px;
+  text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,.6);
 }
 
-.loginBox {
-  background: var(--card);
-  padding: 40px;
-  border-radius: 12px;
-  text-align: center;
+.login-box input{
+  display:block;
+  width:220px;
+  margin:10px auto;
+  padding:10px;
+  border-radius:8px;
+  border:none;
 }
 
-.loginBox input {
-  padding: 10px;
-  margin: 10px 0;
-  width: 200px;
+.login-box button{
+  padding:10px 20px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(90deg,#6366f1,#06b6d4);
+  color:white;
+  cursor:pointer;
 }
 
-/* HEADER */
-header {
-  padding: 20px;
-  text-align: center;
-  background: linear-gradient(270deg,#6c8cff,#8a5cff,#6c8cff);
-  background-size: 400% 400%;
-  animation: gradient 8s linear infinite;
+/* APP */
+#appPage{
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:flex-start;
 }
 
-@keyframes gradient {
-  0% {background-position:0%}
-  100% {background-position:100%}
+.app-header{
+  text-align:center;
+  padding:24px 10px;
+  background:linear-gradient(270deg,#6366f1,#06b6d4,#6366f1);
+  background-size:400% 400%;
+  animation:flow 12s linear infinite;
 }
 
-.controls {
-  margin-top: 10px;
+@keyframes flow{
+  0%{background-position:0% 50%}
+  100%{background-position:100% 50%}
 }
 
-.controls select,
-.controls button {
-  margin: 5px;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: none;
+.controls{
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  padding:14px;
 }
 
-/* MAIN */
-main {
-  padding: 30px;
+.controls button,
+.controls select{
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
 }
 
-/* ALL QUESTIONS */
-.questionCard {
-  background: var(--card);
-  margin-bottom: 20px;
-  padding: 25px;
-  border-radius: 12px;
-  max-width: 900px;
+/* QUIZ CARD */
+.quiz-card{
+  margin:40px auto;
+  width:min(820px,92%);
+  padding:36px 40px;
+  border-radius:20px;
+  background:linear-gradient(145deg,#0f172a,#020617);
+  box-shadow:0 25px 60px rgba(0,0,0,.6);
+  text-align:center;
+  font-size:1.6rem;
+  animation:slide .35s ease;
 }
 
-.questionText {
-  font-size: 18px;
-  margin-bottom: 15px;
+@keyframes slide{
+  from{transform:translateX(60px);opacity:0}
+  to{transform:translateX(0);opacity:1}
 }
 
-.answer {
-  margin-top: 10px;
-  display: none;
+.answer{
+  margin-top:14px;
+  padding:12px;
+  border-left:4px solid var(--accent);
+  background:rgba(99,102,241,.15);
+  border-radius:8px;
+  display:none;
+  font-size:1.1rem;
 }
 
-.showBtn {
-  margin-top: 10px;
+.showBtn{
+  margin-top:12px;
+  padding:8px 16px;
+  border:none;
+  border-radius:8px;
+  background:linear-gradient(90deg,#6366f1,#06b6d4);
+  color:white;
+  cursor:pointer;
 }
 
-/* QUIZ MODE FLASHCARD */
-.quizCard {
-  background: var(--card);
-  padding: 30px;
-  border-radius: 14px;
-  max-width: 750px;
-  margin: 40px auto;
-  text-align: center;
+.navBtns{
+  margin-top:20px;
+  display:flex;
+  justify-content:center;
+  gap:20px;
 }
 
-.quizQuestion {
-  font-size: 20px;
-  margin-bottom: 15px;
+.navBtns button{
+  padding:10px 24px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#6366f1,#06b6d4);
+  color:white;
+  cursor:pointer;
 }
 
-.quizButtons {
-  margin-top: 20px;
+/* ALL MODE */
+.all-card{
+  width:min(900px,95%);
+  margin:20px auto;
+  padding:20px;
+  border-radius:14px;
+  background:#0f172a;
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
 }
 
-.quizButtons button {
-  padding: 12px 20px;
-  margin: 5px;
-  border-radius: 8px;
-  border: none;
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
+.all-q{
+  font-size:1.2rem;
+  margin-bottom:10px;
 }
 
-/* MARKED PANEL */
-#markedPanel {
-  position: fixed;
-  top: 0;
-  right: -320px;
-  width: 300px;
-  height: 100%;
-  background: var(--card);
-  padding: 20px;
-  transition: 0.3s;
-}
-
-#markedPanel.open {
-  right: 0;
+.all-a{
+  display:none;
+  margin-top:6px;
+  padding-left:10px;
+  border-left:3px solid var(--accent);
 }
