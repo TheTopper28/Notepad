@@ -28,6 +28,7 @@ function startApp(u){
 // Check if already logged in
 const currentUser=localStorage.getItem("rev_current_user");
 if(currentUser) startApp(currentUser);
+
 logoutBtn.onclick=()=>{
   localStorage.removeItem("rev_current_user");
   location.reload();
@@ -60,6 +61,7 @@ const themeBtn=document.getElementById("themeBtn");
 const prevBtn=document.getElementById("prevBtn");
 const nextBtn=document.getElementById("nextBtn");
 const toggleBtn=document.getElementById("toggleBtn");
+const navButtons=document.getElementById("navButtons");
 
 // ===== STATE =====
 let questions=[];
@@ -92,13 +94,16 @@ function loadQuestions(){
 // ===== RENDER =====
 function render(){
   counter.textContent=`${index+1}/${questions.length}`;
+
+  // SHOW/HIDE NAV BASED ON MODE
+  navButtons.style.display = single ? "flex" : "none";
+
   if(single){
     questionArea.innerHTML=questions.length>0?singleCardHTML(questions[index],index):"No questions";
-    attachShowButtons();
-  }else{
+  } else {
     questionArea.innerHTML=questions.map((q,i)=>multiCardHTML(q,i)).join("");
-    attachShowButtons();
   }
+  attachShowButtons();
 }
 
 // ===== CARD HTML =====
@@ -143,6 +148,7 @@ nextBtn.onclick=()=>{
   if(index<questions.length-1) index++;
   render();
 };
+
 toggleBtn.onclick=()=>{
   single=!single;
   toggleBtn.textContent=single?"Show All":"Single";
