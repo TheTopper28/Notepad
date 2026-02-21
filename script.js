@@ -66,6 +66,7 @@ function startApp(u){
 
   setTimeout(() => {
     loginPage.classList.add("hidden");
+    document.body.style.overflowY = "auto";
 
     // Show app page
     appPage.classList.remove("hidden");
