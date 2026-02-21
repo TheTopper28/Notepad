@@ -7,13 +7,14 @@
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- ADVANCED LOGIN PAGE -->
 <div class="login-page" id="loginPage">
   <div class="login-box">
     <h2>Student Login</h2>
     <input id="userInput" placeholder="Username">
     <input id="passInput" type="password" placeholder="Password">
     <button id="loginBtn">Login / Register</button>
+    <p class="login-note">Your progress will be saved locally.</p>
   </div>
 </div>
 
@@ -32,16 +33,22 @@
   <div class="controls">
     <select id="subjectSelect"></select>
     <select id="topicSelect"></select>
+    <button id="toggleBtn">Show All</button>
   </div>
 
   <!-- NAV ONLY VISIBLE IN SINGLE MODE -->
   <div class="question-nav" id="navButtons">
     <button id="prevBtn">⬅ Prev</button>
     <button id="nextBtn">Next ➡</button>
-    <button id="toggleBtn">Show All</button>
   </div>
 
   <div id="questionArea"></div>
+
+  <!-- DIFFICULT QUESTIONS PANEL -->
+  <div id="difficultPanel">
+    <h3>⭐ Difficult Questions</h3>
+    <ul id="diffList"></ul>
+  </div>
 </div>
 
 <script src="script.js"></script>
