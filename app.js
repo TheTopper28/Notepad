@@ -1,22 +1,34 @@
 // LOGIN
-const USER="student";
-const PASS="1234";
-
 function login(){
   const name=document.getElementById("nameInput").value.trim();
   const pass=document.getElementById("passInput").value.trim();
   const error=document.getElementById("loginError");
 
-  if(pass!==PASS){
-    error.textContent="Wrong password";
-    return;
-  }
-  if(!name){
-    error.textContent="Enter your name";
+  if(!name || !pass){
+    error.textContent="Enter name and password";
     return;
   }
 
+  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
+
+  if(!users[name]){
+    // register
+    users[name]=pass;
+    localStorage.setItem("rev_users",JSON.stringify(users));
+  }
+  else if(users[name]!==pass){
+    error.textContent="Wrong password";
+    return;
+  }
+
+  localStorage.setItem("rev_current_user",name);
+
   document.getElementById("userName").textContent=name;
+  document.getElementById("loginPage").style.display="none";
+  document.getElementById("appPage").classList.remove("hidden");
+
+  initSelectors();
+}
 
   // switch pages correctly
   document.getElementById("loginPage").style.display="none";
