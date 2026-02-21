@@ -1,109 +1,121 @@
-let mode = "all";
-let currentIndex = 0;
-let marked = [];
+const loginPage=document.getElementById("loginPage");
+const appPage=document.getElementById("appPage");
+const loginBtn=document.getElementById("loginBtn");
+const nameInput=document.getElementById("nameInput");
+const userName=document.getElementById("userName");
 
-const data = {
-  math: [
-    {q:"What is CI formula?",a:"A = P(1+r/n)^(nt)"},
-    {q:"Area of circle?",a:"πr²"}
-  ],
-  science: [
-    {q:"Unit of force?",a:"Newton"},
-    {q:"Speed formula?",a:"Distance/Time"}
-  ]
+const subjectSelect=document.getElementById("subjectSelect");
+const topicSelect=document.getElementById("topicSelect");
+const area=document.getElementById("questionArea");
+
+const quizBtn=document.getElementById("quizModeBtn");
+const allBtn=document.getElementById("allModeBtn");
+
+let currentQuestions=[];
+let index=0;
+
+/* LOGIN */
+loginBtn.onclick=()=>{
+  const name=nameInput.value.trim();
+  if(!name)return;
+  userName.textContent=name;
+  loginPage.classList.add("hidden");
+  appPage.classList.remove("hidden");
 };
 
-function login(){
-  const name = document.getElementById("username").value;
-  if(!name) return;
+/* DATA */
+const data={
+ Computer:{
+  Chapter4:[
+   {q:"What is IDE?",a:"Integrated Development Environment"},
+   {q:"What is variable?",a:"A memory location storing value"},
+   {q:"Define BODMAS",a:"Order of operations"}
+  ]
+ }
+};
 
-  document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("mainPage").classList.remove("hidden");
+/* SUBJECTS */
+Object.keys(data).forEach(s=>{
+  const opt=document.createElement("option");
+  opt.textContent=s;
+  subjectSelect.appendChild(opt);
+});
 
-  renderQuestions();
+subjectSelect.onchange=loadTopics;
+topicSelect.onchange=loadQuestions;
+
+function loadTopics(){
+  topicSelect.innerHTML="";
+  const subj=data[subjectSelect.value];
+  Object.keys(subj).forEach(t=>{
+    const opt=document.createElement("option");
+    opt.textContent=t;
+    topicSelect.appendChild(opt);
+  });
+  loadQuestions();
 }
 
-function toggleTheme(){
-  document.body.classList.toggle("light");
+function loadQuestions(){
+  currentQuestions=data[subjectSelect.value][topicSelect.value];
+  showQuiz();
 }
 
-function toggleMode(){
-  mode = mode==="all" ? "quiz":"all";
-  renderQuestions();
-}
+/* MODES */
+quizBtn.onclick=showQuiz;
+allBtn.onclick=showAll;
 
-function toggleMarked(){
-  document.getElementById("markedPanel").classList.toggle("open");
-  renderMarked();
-}
+/* QUIZ */
+function showQuiz(){
+  const q=currentQuestions[index];
+  if(!q)return;
 
-function renderMarked(){
-  const list = document.getElementById("markedList");
-  list.innerHTML = marked.map(q=>`<div>${q}</div>`).join("");
-}
+  area.innerHTML=`
+    <div class="quiz-card">
+      <div>${q.q}</div>
+      <button class="showBtn">Show Answer</button>
+      <div class="answer">${q.a}</div>
 
-function renderQuestions(){
-  const subject = document.getElementById("subjectSelect").value;
-  const container = document.getElementById("quizContainer");
-  const questions = data[subject];
-
-  if(mode==="all"){
-    container.innerHTML = questions.map((item,i)=>`
-      <div class="questionCard">
-        <div class="questionText">${item.q}</div>
-
-        <button class="showBtn" onclick="toggleAnswer(${i})">
-          Show Answer
-        </button>
-
-        <div id="ans${i}" class="answer">${item.a}</div>
+      <div class="navBtns">
+        <button id="prevBtn">Previous</button>
+        <button id="nextBtn">Next</button>
       </div>
-    `).join("");
-  }
+    </div>
+  `;
 
-  else{
-    const q = questions[currentIndex];
-    container.innerHTML = `
-      <div class="quizCard">
-        <div class="quizQuestion">${q.q}</div>
+  const ans=area.querySelector(".answer");
+  area.querySelector(".showBtn").onclick=()=>{
+    ans.style.display=ans.style.display==="block"?"none":"block";
+  };
 
-        <button onclick="toggleAnswer('quizAns')">
-          Show Answer
-        </button>
+  document.getElementById("prevBtn").onclick=()=>{
+    index=(index-1+currentQuestions.length)%currentQuestions.length;
+    showQuiz();
+  };
 
-        <div id="quizAns" class="answer">${q.a}</div>
+  document.getElementById("nextBtn").onclick=()=>{
+    index=(index+1)%currentQuestions.length;
+    showQuiz();
+  };
+}
 
-        <div class="quizButtons">
-          <button onclick="prev()">Previous</button>
-          <button onclick="next()">Next</button>
-          <button onclick="mark('${q.q}')">⭐</button>
-        </div>
-      </div>
+/* ALL */
+function showAll(){
+  area.innerHTML="";
+  currentQuestions.forEach(q=>{
+    const card=document.createElement("div");
+    card.className="all-card";
+    card.innerHTML=`
+      <div class="all-q">${q.q}</div>
+      <button class="showBtn">Show Answer</button>
+      <div class="all-a">${q.a}</div>
     `;
-  }
+    const ans=card.querySelector(".all-a");
+    card.querySelector(".showBtn").onclick=()=>{
+      ans.style.display=ans.style.display==="block"?"none":"block";
+    };
+    area.appendChild(card);
+  });
 }
 
-function toggleAnswer(id){
-  const el = document.getElementById(
-    typeof id==="number" ? "ans"+id : id
-  );
-  el.style.display = el.style.display==="block"?"none":"block";
-}
-
-function next(){
-  const subject = document.getElementById("subjectSelect").value;
-  currentIndex = (currentIndex+1)%data[subject].length;
-  renderQuestions();
-}
-
-function prev(){
-  const subject = document.getElementById("subjectSelect").value;
-  currentIndex =
-    (currentIndex-1+data[subject].length)%data[subject].length;
-  renderQuestions();
-}
-
-function mark(q){
-  if(!marked.includes(q)) marked.push(q);
-  renderMarked();
-}
+/* INIT */
+loadTopics();
