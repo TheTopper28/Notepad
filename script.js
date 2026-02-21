@@ -1,33 +1,41 @@
+// LOGIN
 const loginPage = document.getElementById("loginPage");
 const appPage = document.getElementById("appPage");
 const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const userName = document.getElementById("userName");
 const userInput = document.getElementById("userInput");
 const passInput = document.getElementById("passInput");
+const userName = document.getElementById("userName");
+const logoutBtn = document.getElementById("logoutBtn");
 
-const subjectSelect = document.getElementById("subjectSelect");
-const topicSelect = document.getElementById("topicSelect");
-const questionArea = document.getElementById("questionArea");
-const counter = document.getElementById("counter");
-const prevBtn = document.getElementById("prevBtn");
-const nextBtn = document.getElementById("nextBtn");
-const modeToggle = document.getElementById("modeToggle");
+loginBtn.onclick = () => {
+  const u = userInput.value.trim();
+  const p = passInput.value.trim();
+  if(!u || !p) return;
 
-const markedToggle = document.getElementById("markedToggle");
-const markedPanel = document.getElementById("markedPanel");
-const closeMarked = document.getElementById("closeMarked");
-const markedList = document.getElementById("markedList");
+  localStorage.setItem("revUser", u);
+  startApp(u);
+};
 
-let questions = [];
-let index = 0;
-let singleMode = true;
+function startApp(u){
+  loginPage.classList.add("hidden");
+  appPage.classList.remove("hidden");
+  userName.textContent = u;
+}
 
+const savedUser = localStorage.getItem("revUser");
+if(savedUser) startApp(savedUser);
+
+logoutBtn.onclick = () => {
+  localStorage.removeItem("revUser");
+  location.reload();
+};
+
+// DATA
 const data = {
   Mathematics:{
     Algebra:[
-      {q:"Solve 2x+5=15",a:"x=5",d:false},
-      {q:"x²-9",a:"(x-3)(x+3)",d:true}
+      {q:"Solve 2x+5=15",a:"x = 5",d:false},
+      {q:"Factor x²−9",a:"(x−3)(x+3)",d:true}
     ],
     Geometry:[
       {q:"Sum of triangle angles?",a:"180°",d:false}
@@ -40,54 +48,36 @@ const data = {
   }
 };
 
-loginBtn.onclick = () => {
-  const u = userInput.value.trim();
-  const p = passInput.value.trim();
-  if(!u || !p) return;
+// ELEMENTS
+const subjectSelect = document.getElementById("subjectSelect");
+const topicSelect = document.getElementById("topicSelect");
+const quizContainer = document.getElementById("quizContainer");
+const modeToggle = document.getElementById("modeToggle");
+const themeBtn = document.getElementById("themeBtn");
+const markedToggle = document.getElementById("markedToggle");
+const markedPanel = document.getElementById("markedPanel");
+const markedList = document.getElementById("markedList");
+const closeMarked = document.getElementById("closeMarked");
 
-  localStorage.setItem("rev_user", u);
-  startApp(u);
-};
+// STATE
+let questions = [];
+let index = 0;
+let quizMode = true;
 
-logoutBtn.onclick = () => {
-  localStorage.removeItem("rev_user");
-  location.reload();
-};
-
-function startApp(u){
-  userName.textContent = "👤 " + u;
-
-  // REMOVE LOGIN COMPLETELY
-  loginPage.style.display = "none";
-
-  // SHOW APP
-  appPage.classList.remove("hidden");
-  appPage.style.display = "block";
-
-  loadSubjects();
-}
-
-const saved = localStorage.getItem("rev_user");
-if(saved) startApp(saved);
-
-function loadSubjects(){
-  subjectSelect.innerHTML = "";
-  Object.keys(data).forEach(s=>{
-    subjectSelect.innerHTML += `<option>${s}</option>`;
-  });
-  loadTopics();
-}
+// INIT SUBJECTS
+Object.keys(data).forEach(s=>{
+  subjectSelect.innerHTML += `<option>${s}</option>`;
+});
+subjectSelect.onchange = loadTopics;
+topicSelect.onchange = loadQuestions;
 
 function loadTopics(){
-  topicSelect.innerHTML = "";
+  topicSelect.innerHTML="";
   Object.keys(data[subjectSelect.value]).forEach(t=>{
     topicSelect.innerHTML += `<option>${t}</option>`;
   });
   loadQuestions();
 }
-
-subjectSelect.onchange = loadTopics;
-topicSelect.onchange = loadQuestions;
 
 function loadQuestions(){
   questions = data[subjectSelect.value][topicSelect.value];
@@ -95,78 +85,105 @@ function loadQuestions(){
   render();
 }
 
+// RENDER
 function render(){
-  counter.textContent = questions.length ? `${index+1}/${questions.length}` : "0/0";
-
-  if(singleMode){
-    prevBtn.style.display = "inline-block";
-    nextBtn.style.display = "inline-block";
-
-    const q = questions[index];
-    questionArea.innerHTML = `
-      <div class="card">
-        <span class="star" onclick="toggleMark(${index})">${q.d?"⭐":"☆"}</span>
-        <div>${q.q}</div>
-        <div class="answer">${q.a}</div>
-        <button class="showBtn">Show Answer</button>
-      </div>`;
-
-    attachShow();
+  if(quizMode){
+    renderQuiz();
   }else{
-    prevBtn.style.display = "none";
-    nextBtn.style.display = "none";
-
-    questionArea.innerHTML = `<div class="allContainer">
-      ${questions.map((q,i)=>`
-        <div class="allCard">
-          <span class="star" onclick="toggleMark(${i})">${q.d?"⭐":"☆"}</span>
-          <div>${q.q}</div>
-          <div class="answer">${q.a}</div>
-          <button class="showBtn">Show Answer</button>
-        </div>
-      `).join("")}
-    </div>`;
-
-    attachShow();
+    renderAll();
   }
-
   updateMarked();
 }
 
-function attachShow(){
+// QUIZ MODE
+function renderQuiz(){
+  const q = questions[index];
+  quizContainer.innerHTML = `
+    <div class="card">
+      <div class="star" onclick="toggleMark(${index})">${q.d?"⭐":"☆"}</div>
+      <div>${q.q}</div>
+      <div class="answer">${q.a}</div>
+      <button class="showBtn">Show Answer</button>
+
+      <div class="navBtns">
+        <button onclick="prevQ()">Prev</button>
+        <button onclick="nextQ()">Next</button>
+      </div>
+    </div>
+  `;
+
+  document.querySelector(".showBtn").onclick = e=>{
+    const ans = document.querySelector(".answer");
+    ans.style.display = ans.style.display==="block"?"none":"block";
+  };
+}
+
+// SHOW ALL
+function renderAll(){
+  quizContainer.innerHTML = `
+    <div class="allContainer">
+      ${questions.map((q,i)=>`
+        <div class="allCard">
+          <div class="star" onclick="toggleMark(${i})">${q.d?"⭐":"☆"}</div>
+          <div>${q.q}</div>
+          <div class="answer">${q.a}</div>
+          <button class="showBtn">Show</button>
+        </div>
+      `).join("")}
+    </div>
+  `;
+
   document.querySelectorAll(".showBtn").forEach(btn=>{
-    const ans = btn.previousElementSibling;
     btn.onclick = ()=>{
+      const ans = btn.previousElementSibling;
       ans.style.display = ans.style.display==="block"?"none":"block";
     };
   });
 }
 
-prevBtn.onclick = ()=>{
-  if(index>0){ index--; render(); }
-};
+// NAV
+function nextQ(){
+  if(index < questions.length-1){
+    index++;
+    renderQuiz();
+  }
+}
 
-nextBtn.onclick = ()=>{
-  if(index<questions.length-1){ index++; render(); }
-};
+function prevQ(){
+  if(index > 0){
+    index--;
+    renderQuiz();
+  }
+}
 
-modeToggle.onclick = ()=>{
-  singleMode = !singleMode;
-  modeToggle.textContent = singleMode?"Show All":"Quiz Mode";
-  render();
-};
-
+// MARK
 function toggleMark(i){
   questions[i].d = !questions[i].d;
   render();
 }
 
+// MARKED PANEL
+function updateMarked(){
+  const marked = questions.filter(q=>q.d);
+  markedList.innerHTML = marked.map(q=>`
+    <div class="markedItem">${q.q}</div>
+  `).join("");
+}
+
 markedToggle.onclick = ()=> markedPanel.classList.add("open");
 closeMarked.onclick = ()=> markedPanel.classList.remove("open");
 
-function updateMarked(){
-  const marked = questions.filter(q=>q.d);
-  markedList.innerHTML = marked.length
-    ? marked.map(q=>`<div class="markedItem">${q.q}</div>`).join("")
-    : "No marked questions";
-}
+// MODE
+modeToggle.onclick = ()=>{
+  quizMode = !quizMode;
+  modeToggle.textContent = quizMode ? "Quiz" : "All";
+  render();
+};
+
+// THEME
+themeBtn.onclick = ()=>{
+  document.body.classList.toggle("light");
+};
+
+// START
+loadTopics();
