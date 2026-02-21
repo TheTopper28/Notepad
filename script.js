@@ -16,7 +16,7 @@ const data={
   }
 };
 
-// ========= LOGIN =========
+// LOGIN
 const loginPage=document.getElementById("loginPage");
 const appPage=document.getElementById("appPage");
 const loginBtn=document.getElementById("loginBtn");
@@ -30,11 +30,7 @@ const userName=document.getElementById("userName");
 loginBtn.onclick=()=>{
   const name=nameInput.value.trim();
   const pass=passInput.value.trim();
-
-  if(!name||!pass){
-    loginError.textContent="Enter details";
-    return;
-  }
+  if(!name||!pass){loginError.textContent="Enter details";return;}
 
   let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
 
@@ -48,35 +44,27 @@ loginBtn.onclick=()=>{
   }
 
   localStorage.setItem("rev_current_user",name);
-  showApp(name);
-};
-
-function showApp(name){
   loginPage.style.display="none";
   appPage.classList.remove("hidden");
   userName.textContent=name;
-}
+};
 
 const savedUser=localStorage.getItem("rev_current_user");
-if(savedUser) showApp(savedUser);
+if(savedUser){
+  loginPage.style.display="none";
+  appPage.classList.remove("hidden");
+  userName.textContent=savedUser;
+}
 
-resetBtn.onclick=()=>{
-  localStorage.clear();
-  location.reload();
-};
+resetBtn.onclick=()=>{localStorage.clear();location.reload();}
+logoutBtn.onclick=()=>{localStorage.removeItem("rev_current_user");location.reload();}
 
-logoutBtn.onclick=()=>{
-  localStorage.removeItem("rev_current_user");
-  location.reload();
-};
-
-// ========= THEME =========
-const themeBtn=document.getElementById("themeBtn");
-themeBtn.onclick=()=>{
+// THEME
+document.getElementById("themeBtn").onclick=()=>{
   document.body.classList.toggle("light");
 };
 
-// ========= QUIZ =========
+// QUIZ
 const subjectSelect=document.getElementById("subjectSelect");
 const topicSelect=document.getElementById("topicSelect");
 const quizContainer=document.getElementById("quizContainer");
@@ -117,9 +105,9 @@ function render(){
     quizContainer.innerHTML=`
       <div class="card">
         ${q.q}
-        <span class="star">${q.d?"⭐":"☆"}</span>
-        <div class="answer">${q.a}</div>
         <button class="showBtn">Show Answer</button>
+        <div class="answer">${q.a}</div>
+        <span class="star">${q.d?"⭐":"☆"}</span>
         <div class="navBtns">
           <button id="prevBtn">Previous</button>
           <button id="nextBtn">Next</button>
@@ -131,9 +119,9 @@ function render(){
       questions.map(q=>`
         <div class="allCard">
           ${q.q}
-          <span class="star">${q.d?"⭐":"☆"}</span>
-          <div class="answer">${q.a}</div>
           <button class="showBtn">Show Answer</button>
+          <div class="answer">${q.a}</div>
+          <span class="star">${q.d?"⭐":"☆"}</span>
         </div>
       `).join("")
     }</div>`;
@@ -145,7 +133,7 @@ function render(){
 function attachEvents(){
   document.querySelectorAll(".showBtn").forEach(btn=>{
     btn.onclick=()=>{
-      const ans=btn.previousElementSibling;
+      const ans=btn.nextElementSibling;
       ans.style.display=ans.style.display==="block"?"none":"block";
     };
   });
