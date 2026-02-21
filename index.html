@@ -1,55 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Revision App</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revision App</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="loginPage" class="page login-page">
-  <div class="login-box">
-    <h2>Student Login</h2>
-    <input id="nameInput" placeholder="Username">
-    <input id="passInput" type="password" placeholder="Password">
-    <button id="loginBtn">Login / Register</button>
-    <button id="resetBtn" class="reset-btn">Reset Account</button>
-    <p id="loginError"></p>
+<div id="loginPage" class="centerPage">
+  <div class="loginBox">
+    <h2>Revision Login</h2>
+    <input id="username" placeholder="Enter your name" />
+    <button onclick="login()">Enter</button>
   </div>
 </div>
 
-<!-- APP -->
-<div id="appPage" class="page hidden">
+<!-- MAIN -->
+<div id="mainPage" class="hidden">
 
-  <header class="app-header">
-    <h1>Revision Panel</h1>
-    <div class="top-right">
-      👤 <span id="userName"></span>
-      <button id="themeBtn">🌙</button>
-      <button id="modeBtn">Quiz Mode</button>
-      <button id="markedBtn">⭐</button>
-      <button id="logoutBtn">Logout</button>
-    </div>
-  </header>
-
+<header>
+  <h1>Revision Dashboard</h1>
   <div class="controls">
-    <select id="subjectSelect"></select>
-    <select id="topicSelect"></select>
+    <select id="subjectSelect" onchange="renderQuestions()">
+      <option value="math">Math</option>
+      <option value="science">Science</option>
+    </select>
+
+    <button onclick="toggleMode()">Mode</button>
+    <button onclick="toggleTheme()">Theme</button>
+    <button onclick="toggleMarked()">⭐</button>
   </div>
+</header>
 
+<main>
   <div id="quizContainer"></div>
-
-</div>
+</main>
 
 <!-- MARKED PANEL -->
-<div id="markedPanel" class="marked-panel">
-  <div class="marked-header">
-    <h3>Marked</h3>
-    <button id="closeMarked">✕</button>
-  </div>
+<div id="markedPanel">
+  <h3>Marked Questions</h3>
   <div id="markedList"></div>
+</div>
+
 </div>
 
 <script src="script.js"></script>
