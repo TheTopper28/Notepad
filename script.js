@@ -54,15 +54,8 @@ quizToggle.onclick = () => {
 };
 
 function populateSubjects(){
+  subjectSelect.innerHTML="";
   Object.keys(data).forEach(s=>{
     const o=document.createElement("option");
     o.value=s;o.textContent=s;
-    subjectSelect.appendChild(o);
-  });
-  populateTopics();
-}
-
-function populateTopics(){
-  topicSelect.innerHTML="";
-  Object.keys(data[subjectSelect.value]).forEach(t=>{
-    const o=document.createElement("option");
+    subject
