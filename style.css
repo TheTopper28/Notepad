@@ -112,9 +112,10 @@ select, .controls button{
   align-items:center;
   justify-content:center;
   gap:20px;
+  overflow:auto;
 }
 
-/* BIG FLASHCARD */
+/* FLASHCARD */
 .card{
   background:var(--panel);
   border-radius:18px;
@@ -124,25 +125,34 @@ select, .controls button{
   text-align:center;
   font-size:1.5rem;
   box-shadow:0 20px 50px rgba(0,0,0,.5);
-  position:relative;
 }
 
-/* ANSWER */
+/* LIST MODE */
+.listCard{
+  background:var(--panel);
+  border-radius:12px;
+  width:min(800px,90vw);
+  padding:20px;
+  margin:10px auto;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+  text-align:left;
+  font-size:1.1rem;
+}
+
 .answer{
-  margin-top:20px;
-  padding:12px;
+  margin-top:12px;
+  padding:10px;
   border-left:4px solid var(--accent);
   background:rgba(99,102,241,.1);
   border-radius:6px;
   display:none;
-  font-size:1.2rem;
 }
 
 .showAnswerBtn{
-  margin-top:20px;
-  padding:10px 16px;
+  margin-top:10px;
+  padding:8px 14px;
   border:none;
-  border-radius:8px;
+  border-radius:6px;
   background:linear-gradient(90deg,#6366f1,#06b6d4);
   color:white;
   cursor:pointer;
@@ -163,7 +173,7 @@ select, .controls button{
   cursor:pointer;
 }
 
-/* MARKED PANEL OVERLAY */
+/* MARKED PANEL */
 #difficultPanel{
   position:fixed;
   top:0;
@@ -181,11 +191,20 @@ select, .controls button{
   right:0;
 }
 
-#difficultPanel ul{
-  padding-left:20px;
+.panelHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-/* STAR */
+#closePanelBtn{
+  background:none;
+  border:none;
+  color:var(--text);
+  font-size:1.2rem;
+  cursor:pointer;
+}
+
 .star{
   cursor:pointer;
   margin-left:8px;
