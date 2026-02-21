@@ -8,17 +8,69 @@
 
 body{
   margin:0;
-  font-family:Arial;
+  font-family:Arial, Helvetica, sans-serif;
   background:var(--bg);
   color:var(--text);
+  overflow:hidden;
 }
 
+.page{
+  position:absolute;
+  inset:0;
+}
+
+.hidden{
+  display:none;
+}
+
+/* LOGIN */
+.login-page{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#6366f1,#06b6d4);
+}
+
+.login-box{
+  background:var(--panel);
+  padding:34px;
+  border-radius:18px;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+.login-box input{
+  display:block;
+  width:260px;
+  margin:12px auto;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+}
+
+.login-box button{
+  margin-top:8px;
+  padding:12px 22px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#6366f1,#06b6d4);
+  color:white;
+  cursor:pointer;
+}
+
+.reset-btn{
+  background:#ef4444;
+}
+
+/* HEADER */
 .app-header{
-  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:16px 22px;
   background:linear-gradient(270deg,#6366f1,#06b6d4,#6366f1);
   background-size:400% 400%;
   animation:flow 10s linear infinite;
-  text-align:center;
 }
 
 @keyframes flow{
@@ -26,66 +78,133 @@ body{
   100%{background-position:100%}
 }
 
-.controls{
-  margin-top:10px;
-  display:flex;
-  gap:10px;
-  justify-content:center;
+.top-right button{
+  margin-left:8px;
+  padding:8px 14px;
+  border:none;
+  border-radius:8px;
+  background:rgba(255,255,255,.15);
+  color:white;
+  cursor:pointer;
 }
 
-select,button{
-  padding:8px 12px;
-  border-radius:8px;
+/* CONTROLS */
+.controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:14px;
+}
+
+select{
+  padding:10px 14px;
+  border-radius:10px;
   border:none;
 }
 
-button{
+/* QUIZ CONTAINER */
+#quizContainer{
+  height:calc(100vh - 130px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* QUIZ CARD */
+.card{
+  width:min(950px,92%);
+  min-height:420px;
+  padding:60px;
+  border-radius:28px;
+  background:linear-gradient(145deg,#0f172a,#020617);
+  box-shadow:0 30px 70px rgba(0,0,0,.6);
+  text-align:center;
+  font-size:2rem;
+  position:relative;
+  animation:slide .35s ease;
+}
+
+@keyframes slide{
+  from{transform:translateX(80px);opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+
+.answer{
+  margin-top:26px;
+  padding:16px;
+  background:rgba(99,102,241,.15);
+  border-left:4px solid var(--accent);
+  border-radius:10px;
+  display:none;
+  font-size:1.3rem;
+}
+
+.showBtn{
+  margin-top:24px;
+  padding:12px 22px;
+  border:none;
+  border-radius:10px;
   background:linear-gradient(90deg,#6366f1,#06b6d4);
   color:white;
   cursor:pointer;
 }
 
-#quizContainer{
-  padding:20px;
+.navBtns{
+  margin-top:26px;
   display:flex;
+  gap:20px;
   justify-content:center;
 }
 
-.card{
-  width:900px;
-  background:var(--panel);
-  padding:40px;
-  border-radius:20px;
-  text-align:center;
+.star{
+  position:absolute;
+  top:14px;
+  right:18px;
   font-size:1.6rem;
+  cursor:pointer;
 }
 
-.answer{
-  margin-top:20px;
-  padding:12px;
-  border-left:4px solid var(--accent);
-  display:none;
+/* SHOW ALL */
+.allContainer{
+  width:min(950px,92%);
+  height:100%;
+  overflow:auto;
+  padding:20px;
 }
 
-.navBtns{
-  margin-top:20px;
+.allCard{
+  background:var(--panel);
+  padding:24px;
+  border-radius:16px;
+  margin-bottom:18px;
+  position:relative;
 }
 
+/* MARKED PANEL */
 .marked-panel{
   position:fixed;
-  right:-350px;
   top:0;
-  width:320px;
+  right:-360px;
+  width:360px;
   height:100%;
-  background:#0f172a;
-  transition:.3s;
+  background:var(--panel);
+  transition:.35s;
+  box-shadow:-10px 0 30px rgba(0,0,0,.6);
+  z-index:10;
 }
 
-.marked-panel.open{right:0}
+.marked-panel.open{
+  right:0;
+}
 
 .marked-header{
   display:flex;
   justify-content:space-between;
-  padding:12px;
+  padding:14px;
   border-bottom:1px solid #1e293b;
+}
+
+#markedList{
+  padding:14px;
+  overflow:auto;
 }
