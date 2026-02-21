@@ -1,17 +1,9 @@
 :root{
   --bg:#020617;
   --panel:#0f172a;
-  --panel2:#020617;
   --text:#e5e7eb;
   --accent:#6366f1;
   --accent2:#06b6d4;
-}
-
-.light{
-  --bg:#f1f5f9;
-  --panel:#ffffff;
-  --panel2:#e2e8f0;
-  --text:#0f172a;
 }
 
 body{
@@ -19,51 +11,14 @@ body{
   font-family:Arial;
   background:var(--bg);
   color:var(--text);
-  overflow:hidden;
 }
 
-.page{
-  position:absolute;
-  inset:0;
-}
-
-.hidden{display:none}
-
-/* LOGIN */
-.login-page{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#6366f1,#06b6d4);
-  z-index:5;
-}
-
-.login-box{
-  background:var(--panel);
-  padding:40px;
-  border-radius:18px;
-  text-align:center;
-}
-
-.login-box input{
-  width:260px;
-  padding:12px;
-  margin:12px 0;
-  border-radius:10px;
-  border:none;
-}
-
-#loginError{color:#f87171}
-
-/* HEADER */
 .app-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:16px 22px;
+  padding:16px;
   background:linear-gradient(270deg,#6366f1,#06b6d4,#6366f1);
   background-size:400% 400%;
-  animation:flow 12s linear infinite;
+  animation:flow 10s linear infinite;
+  text-align:center;
 }
 
 @keyframes flow{
@@ -71,89 +26,59 @@ body{
   100%{background-position:100%}
 }
 
-.header-right{
+.controls{
+  margin-top:10px;
   display:flex;
   gap:10px;
-  align-items:center;
-}
-
-/* CONTROLS */
-.controls{
-  display:flex;
   justify-content:center;
-  gap:12px;
-  padding:14px;
 }
 
-select{
-  padding:10px 14px;
-  border-radius:10px;
+select,button{
+  padding:8px 12px;
+  border-radius:8px;
   border:none;
 }
 
-/* QUIZ */
+button{
+  background:linear-gradient(90deg,#6366f1,#06b6d4);
+  color:white;
+  cursor:pointer;
+}
+
 #quizContainer{
-  height:calc(100vh - 130px);
+  padding:20px;
   display:flex;
-  align-items:center;
   justify-content:center;
 }
 
 .card{
-  width:min(1000px,92%);
-  min-height:450px;
-  padding:60px;
-  border-radius:28px;
-  background:linear-gradient(145deg,var(--panel),var(--panel2));
+  width:900px;
+  background:var(--panel);
+  padding:40px;
+  border-radius:20px;
   text-align:center;
-  font-size:2rem;
-  position:relative;
+  font-size:1.6rem;
 }
 
 .answer{
   margin-top:20px;
-  background:rgba(99,102,241,.15);
-  padding:16px;
-  border-radius:10px;
+  padding:12px;
+  border-left:4px solid var(--accent);
   display:none;
-  font-size:1.2rem;
 }
 
 .navBtns{
-  margin-top:30px;
-  display:flex;
-  gap:20px;
-  justify-content:center;
+  margin-top:20px;
 }
 
-/* SHOW ALL */
-.allContainer{
-  height:calc(100vh - 130px);
-  overflow:auto;
-  padding:24px;
-}
-
-.allCard{
-  width:min(1000px,95%);
-  margin:0 auto 20px auto;
-  background:var(--panel);
-  padding:28px;
-  border-radius:16px;
-  font-size:1.2rem;
-  position:relative;
-}
-
-/* MARKED PANEL */
 .marked-panel{
   position:fixed;
+  right:-350px;
   top:0;
-  right:-380px;
-  width:360px;
+  width:320px;
   height:100%;
-  background:var(--panel);
-  transition:.35s;
-  box-shadow:-10px 0 30px rgba(0,0,0,.6);
-  z-index:10;
+  background:#0f172a;
+  transition:.3s;
 }
 
 .marked-panel.open{right:0}
@@ -161,11 +86,6 @@ select{
 .marked-header{
   display:flex;
   justify-content:space-between;
-  padding:16px;
+  padding:12px;
   border-bottom:1px solid #1e293b;
-}
-
-#markedList{
-  padding:14px;
-  overflow:auto;
 }
