@@ -7,32 +7,19 @@ const userInput=document.getElementById("userInput");
 const passInput=document.getElementById("passInput");
 const logoutBtn=document.getElementById("logoutBtn");
 
-loginBtn.onclick=()=>{
-  const u=userInput.value.trim();
-  const p=passInput.value.trim();
-  if(!u||!p){alert("Enter details"); return;}
-  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
-  if(!users[u]){users[u]=p; alert("Account created");}
-  else if(users[u]!==p){alert("Wrong password"); return;}
-  localStorage.setItem("rev_users",JSON.stringify(users));
-  localStorage.setItem("rev_current_user",u);
-  startApp(u);
-};
-
-function startApp(u){
-  loginPage.classList.add("hidden");
-  appPage.classList.remove("hidden");
-  userName.textContent="👤 "+u;
-}
-
-// Check if already logged in
-const currentUser=localStorage.getItem("rev_current_user");
-if(currentUser) startApp(currentUser);
-
-logoutBtn.onclick=()=>{
-  localStorage.removeItem("rev_current_user");
-  location.reload();
-};
+// ===== QUIZ ELEMENTS =====
+const subjectSelect=document.getElementById("subjectSelect");
+const topicSelect=document.getElementById("topicSelect");
+const questionArea=document.getElementById("questionArea");
+const counter=document.getElementById("counter");
+const themeBtn=document.getElementById("themeBtn");
+const prevBtn=document.getElementById("prevBtn");
+const nextBtn=document.getElementById("nextBtn");
+const toggleBtn=document.getElementById("toggleBtn");
+const navButtons=document.getElementById("navButtons");
+const diffList=document.getElementById("diffList");
+const difficultPanel=document.getElementById("difficultPanel");
+const toggleDifficultBtn=document.getElementById("toggleDifficultBtn");
 
 // ===== DATA =====
 const data={
@@ -52,27 +39,50 @@ const data={
   }
 };
 
-// ===== ELEMENTS =====
-const subjectSelect=document.getElementById("subjectSelect");
-const topicSelect=document.getElementById("topicSelect");
-const questionArea=document.getElementById("questionArea");
-const counter=document.getElementById("counter");
-const themeBtn=document.getElementById("themeBtn");
-const prevBtn=document.getElementById("prevBtn");
-const nextBtn=document.getElementById("nextBtn");
-const toggleBtn=document.getElementById("toggleBtn");
-const navButtons=document.getElementById("navButtons");
-const diffList=document.getElementById("diffList");
-
 // ===== STATE =====
 let questions=[];
 let index=0;
 let single=true;
+let animating=false;
 
-// ===== INIT SUBJECTS =====
-Object.keys(data).forEach(s=>{
-  subjectSelect.innerHTML+=`<option>${s}</option>`;
-});
+// ===== LOGIN FUNCTION =====
+loginBtn.onclick=()=>{
+  const u=userInput.value.trim();
+  const p=passInput.value.trim();
+  if(!u||!p){alert("Enter details"); return;}
+  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
+  if(!users[u]){users[u]=p; alert("Account created");}
+  else if(users[u]!==p){alert("Wrong password"); return;}
+  localStorage.setItem("rev_users",JSON.stringify(users));
+  localStorage.setItem("rev_current_user",u);
+  startApp(u);
+};
+
+// ===== START APP WITH LOGIN TRANSITION =====
+function startApp(u){
+  loginPage.style.opacity="0";
+  loginPage.style.transform="scale(0.95)";
+  setTimeout(()=>{
+    loginPage.classList.add("hidden");
+    appPage.classList.remove("hidden");
+    void appPage.offsetWidth;
+    appPage.classList.add("active");
+    userName.textContent="👤 "+u;
+  }, 400);
+}
+
+// ===== LOGOUT =====
+logoutBtn.onclick=()=>{
+  localStorage.removeItem("rev_current_user");
+  location.reload();
+};
+
+// ===== INITIAL LOAD =====
+const currentUser=localStorage.getItem("rev_current_user");
+if(currentUser) startApp(currentUser);
+
+// ===== LOAD SUBJECTS =====
+Object.keys(data).forEach(s=> subjectSelect.innerHTML+=`<option>${s}</option>`);
 subjectSelect.addEventListener("change",loadTopics);
 topicSelect.addEventListener("change",loadQuestions);
 
@@ -92,41 +102,57 @@ function loadQuestions(){
   render();
 }
 
-// ===== RENDER =====
-function render(){
+// ===== RENDER QUESTIONS WITH SLIDE ANIMATION =====
+function render(direction="next"){
+  if(animating) return;
   counter.textContent=`${index+1}/${questions.length}`;
   navButtons.style.display = single ? "flex" : "none";
 
-  if(single){
-    questionArea.innerHTML=questions.length>0?singleCardHTML(questions[index],index):"No questions";
+  const oldCard = questionArea.querySelector(".card");
+  const newCard = document.createElement("div");
+  newCard.className="card enter";
+  newCard.innerHTML = questions.length>0
+    ? single ? singleCardHTML(questions[index],index) 
+             : multiCardHTML(questions[index],index)
+    : "No questions";
+
+  questionArea.appendChild(newCard);
+  attachShowButtons();
+
+  if(oldCard){
+    animating=true;
+    oldCard.classList.add("exit");
+    oldCard.classList.add("exit-active");
+    newCard.classList.add("enter-active");
+
+    setTimeout(()=>{
+      if(oldCard) oldCard.remove();
+      newCard.classList.remove("enter","enter-active");
+      animating=false;
+    },500);
   } else {
-    questionArea.innerHTML=questions.map((q,i)=>multiCardHTML(q,i)).join("");
+    newCard.classList.remove("enter");
   }
 
-  attachShowButtons();
   renderDifficultPanel();
 }
 
 // ===== CARD HTML =====
 function singleCardHTML(qObj,i){
-  return `<div class="card">
-    <b>${qObj.q}</b>
+  return `<b>${qObj.q}</b>
     <span class="star" onclick="toggleDiff(${i})">${qObj.d?"⭐":"☆"}</span>
     <div class="answer">${qObj.a}</div>
-    <button class="showAnswerBtn">Show/Hide Answer</button>
-  </div>`;
+    <button class="showAnswerBtn">Show/Hide Answer</button>`;
 }
 
 function multiCardHTML(qObj,i){
-  return `<div class="card">
-    <b>${qObj.q}</b>
+  return `<b>${qObj.q}</b>
     <span class="star" onclick="toggleDiff(${i})">${qObj.d?"⭐":"☆"}</span>
     <div class="answer">${qObj.a}</div>
-    <button class="showAnswerBtn">Show/Hide Answer</button>
-  </div>`;
+    <button class="showAnswerBtn">Show/Hide Answer</button>`;
 }
 
-// ===== ATTACH SHOW BUTTONS =====
+// ===== SHOW/HIDE ANSWER =====
 function attachShowButtons(){
   document.querySelectorAll(".showAnswerBtn").forEach(btn=>{
     const ans=btn.previousElementSibling;
@@ -140,7 +166,7 @@ function toggleDiff(i){
   render();
 }
 
-// ===== RENDER DIFFICULT PANEL =====
+// ===== DIFFICULT PANEL =====
 function renderDifficultPanel(){
   const difficultQs = questions.filter(q=>q.d);
   diffList.innerHTML = difficultQs.length>0 ?
@@ -148,14 +174,14 @@ function renderDifficultPanel(){
     "<li>No difficult questions marked</li>";
 }
 
+toggleDifficultBtn.onclick=()=>difficultPanel.classList.toggle("active");
+
 // ===== NAVIGATION =====
 prevBtn.onclick=()=>{
-  if(index>0) index--;
-  render();
+  if(index>0){ index--; render("prev"); }
 };
 nextBtn.onclick=()=>{
-  if(index<questions.length-1) index++;
-  render();
+  if(index<questions.length-1){ index++; render("next"); }
 };
 
 // ===== TOGGLE SINGLE / ALL =====
@@ -167,6 +193,3 @@ toggleBtn.onclick=()=>{
 
 // ===== THEME =====
 themeBtn.onclick=()=>document.body.classList.toggle("light");
-
-// ===== INITIAL LOAD =====
-loadTopics();
