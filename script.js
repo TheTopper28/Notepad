@@ -1,144 +1,103 @@
-const loginPage=document.getElementById("loginPage");
-const appPage=document.getElementById("appPage");
-const loginBtn=document.getElementById("loginBtn");
-const nameInput=document.getElementById("nameInput");
-const passInput=document.getElementById("passInput");
-const userName=document.getElementById("userName");
+let questions = [
+  {q: "What is 2+2?", a: "4", subject: "Math", topic: "Basics"},
+  {q: "Capital of France?", a: "Paris", subject: "Geography", topic: "Europe"},
+  {q: "Who wrote Hamlet?", a: "William Shakespeare", subject: "Literature", topic: "Drama"}
+];
 
-const subjectSelect=document.getElementById("subjectSelect");
-const topicSelect=document.getElementById("topicSelect");
-const area=document.getElementById("questionArea");
+let currentIndex = 0;
+let marked = [];
 
-const quizBtn=document.getElementById("quizModeBtn");
-const allBtn=document.getElementById("allModeBtn");
-const themeBtn=document.getElementById("themeBtn");
+function login() {
+  const name = document.getElementById("username").value;
+  if(name.trim() === "") return alert("Enter your name!");
+  document.getElementById("login-page").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("welcome").innerText = `Welcome, ${name}`;
+  loadSubjects();
+  renderQuestions();
+}
 
-let currentQuestions=[];
-let index=0;
+function loadSubjects() {
+  let subjects = [...new Set(questions.map(q => q.subject))];
+  let subjectSelect = document.getElementById("subject");
+  subjectSelect.innerHTML = subjects.map(s => `<option>${s}</option>`).join("");
+  subjectSelect.onchange = loadTopics;
+  loadTopics();
+}
 
-/* LOGIN */
-loginBtn.onclick=()=>{
-  const u=nameInput.value.trim();
-  const p=passInput.value.trim();
-  if(!u||!p){alert("Enter username & password");return;}
+function loadTopics() {
+  let subject = document.getElementById("subject").value;
+  let topics = [...new Set(questions.filter(q => q.subject === subject).map(q => q.topic))];
+  let topicSelect = document.getElementById("topic");
+  topicSelect.innerHTML = topics.map(t => `<option>${t}</option>`).join("");
+  renderQuestions();
+}
 
-  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
+function renderQuestions() {
+  let subject = document.getElementById("subject").value;
+  let topic = document.getElementById("topic").value;
+  let list = document.getElementById("question-list");
+  list.innerHTML = "";
+  questions.filter(q => q.subject === subject && q.topic === topic).forEach((q, i) => {
+    let div = document.createElement("div");
+    div.className = "question";
+    div.innerHTML = `<strong>${q.q}</strong>
+      <button onclick="toggleAnswer(this, '${q.a}')">Show Answer</button>
+      <button onclick="markQuestion(${i})">Mark Difficult</button>`;
+    list.appendChild(div);
+  });
+}
 
-  if(!users[u]){
-    users[u]=p;
-    alert("Account created");
-  }else if(users[u]!==p){
-    alert("Wrong password");
-    return;
+function toggleAnswer(btn, answer) {
+  if(btn.nextElementSibling && btn.nextElementSibling.className === "answer") {
+    btn.nextElementSibling.remove();
+  } else {
+    let ans = document.createElement("div");
+    ans.className = "answer";
+    ans.innerText = answer;
+    btn.insertAdjacentElement("afterend", ans);
   }
-
-  localStorage.setItem("rev_users",JSON.stringify(users));
-  userName.textContent=u;
-
-  loginPage.classList.add("hidden");
-  appPage.classList.remove("hidden");
-};
-
-/* THEME */
-themeBtn.onclick=()=>{
-  document.body.classList.toggle("light");
-};
-
-/* DATA */
-const data={
- Computer:{
-  Chapter4:[
-   {q:"What is IDE?",a:"Integrated Development Environment"},
-   {q:"What is variable?",a:"A memory location storing value"},
-   {q:"Define BODMAS",a:"Order of operations"}
-  ]
- }
-};
-
-/* SUBJECTS */
-Object.keys(data).forEach(s=>{
-  const opt=document.createElement("option");
-  opt.textContent=s;
-  subjectSelect.appendChild(opt);
-});
-
-subjectSelect.onchange=loadTopics;
-topicSelect.onchange=loadQuestions;
-
-function loadTopics(){
-  topicSelect.innerHTML="";
-  const subj=data[subjectSelect.value];
-  Object.keys(subj).forEach(t=>{
-    const opt=document.createElement("option");
-    opt.textContent=t;
-    topicSelect.appendChild(opt);
-  });
-  loadQuestions();
 }
 
-function loadQuestions(){
-  currentQuestions=data[subjectSelect.value][topicSelect.value];
-  index=0;
-  showQuiz();
+function markQuestion(i) {
+  if(!marked.includes(i)) {
+    marked.push(i);
+    updateMarkedPanel();
+  }
 }
 
-/* MODES */
-quizBtn.onclick=showQuiz;
-allBtn.onclick=showAll;
-
-/* QUIZ */
-function showQuiz(){
-  const q=currentQuestions[index];
-  if(!q)return;
-
-  area.innerHTML=`
-    <div class="quiz-card">
-      <div>${q.q}</div>
-      <button class="showBtn">Show Answer</button>
-      <div class="answer">${q.a}</div>
-
-      <div class="navBtns">
-        <button id="prevBtn">Previous</button>
-        <button id="nextBtn">Next</button>
-      </div>
-    </div>
-  `;
-
-  const ans=area.querySelector(".answer");
-  area.querySelector(".showBtn").onclick=()=>{
-    ans.style.display=ans.style.display==="block"?"none":"block";
-  };
-
-  document.getElementById("prevBtn").onclick=()=>{
-    index=(index-1+currentQuestions.length)%currentQuestions.length;
-    showQuiz();
-  };
-
-  document.getElementById("nextBtn").onclick=()=>{
-    index=(index+1)%currentQuestions.length;
-    showQuiz();
-  };
+function updateMarkedPanel() {
+  let ul = document.getElementById("marked-list");
+  ul.innerHTML = marked.map(i => `<li>${questions[i].q}</li>`).join("");
 }
 
-/* ALL */
-function showAll(){
-  area.innerHTML="";
-  currentQuestions.forEach(q=>{
-    const card=document.createElement("div");
-    card.className="all-card";
-    card.innerHTML=`
-      <div class="all-q">${q.q}</div>
-      <button class="showBtn">Show Answer</button>
-      <div class="all-a">${q.a}</div>
-    `;
-    const ans=card.querySelector(".all-a");
-    card.querySelector(".showBtn").onclick=()=>{
-      ans.style.display=ans.style.display==="block"?"none":"block";
-    };
-    area.appendChild(card);
-  });
+function togglePanel() {
+  let panel = document.getElementById("marked-panel");
+  panel.classList.toggle("show");
 }
 
-/* INIT */
-loadTopics();
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+}
 
+// Quiz Mode
+function showAnswer() {
+  document.getElementById("quiz-answer").classList.remove("hidden");
+}
+
+function nextQuestion() {
+  currentIndex = (currentIndex + 1) % questions.length;
+  loadQuiz();
+}
+
+function prevQuestion() {
+  currentIndex = (currentIndex - 1 + questions.length) % questions.length;
+  loadQuiz();
+}
+
+function loadQuiz() {
+  let q = questions[currentIndex];
+  document.getElementById("quiz-question").innerText = q.q;
+  document.getElementById("quiz-answer").innerText = q.a;
+  document.getElementById("quiz-answer").classList.add("hidden");
+}
