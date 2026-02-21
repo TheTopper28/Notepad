@@ -2,7 +2,6 @@
 :root{
   --bg:#020617;
   --panel:#0f172a;
-  --panel2:#020617;
   --text:#e5e7eb;
   --accent:#6366f1;
   --accent2:#06b6d4;
@@ -24,9 +23,7 @@ body{
   height:100%;
 }
 
-.hidden{
-  display:none;
-}
+.hidden{display:none}
 
 /* ================= LOGIN ================= */
 .login-page{
@@ -45,10 +42,6 @@ body{
   width:340px;
 }
 
-.login-box h2{
-  margin-top:0;
-}
-
 .login-box input{
   display:block;
   width:100%;
@@ -56,17 +49,14 @@ body{
   padding:13px;
   border-radius:10px;
   border:none;
-  font-size:1rem;
 }
 
 .login-box button{
-  margin-top:12px;
   padding:13px 26px;
   border:none;
   border-radius:10px;
   background:linear-gradient(90deg,#6366f1,#06b6d4);
   color:white;
-  font-size:1rem;
   cursor:pointer;
 }
 
@@ -79,7 +69,6 @@ body{
   background:linear-gradient(270deg,#6366f1,#06b6d4,#6366f1);
   background-size:400% 400%;
   animation:headerFlow 10s linear infinite;
-  box-shadow:0 4px 20px rgba(0,0,0,.4);
 }
 
 @keyframes headerFlow{
@@ -100,7 +89,6 @@ body{
   background:rgba(255,255,255,.15);
   color:white;
   cursor:pointer;
-  backdrop-filter:blur(4px);
 }
 
 /* ================= CONTROLS ================= */
@@ -116,7 +104,6 @@ select{
   padding:11px 16px;
   border-radius:10px;
   border:none;
-  font-size:1rem;
 }
 
 /* ================= QUIZ CONTAINER ================= */
@@ -128,39 +115,24 @@ select{
   justify-content:center;
 }
 
-/* ================= BIG QUIZ CARD ================= */
+/* ================= QUIZ CARD ================= */
 .card{
-  width:min(1050px,94%);        /* wider */
-  min-height:500px;             /* taller */
+  width:min(1050px,94%);
+  min-height:500px;
   padding:70px 80px;
   border-radius:30px;
-
-  background:
-    linear-gradient(145deg,#0f172a,#020617);
-
-  box-shadow:
-    0 40px 100px rgba(0,0,0,.7),
-    inset 0 0 60px rgba(99,102,241,.09);
-
+  background:linear-gradient(145deg,#0f172a,#020617);
+  box-shadow:0 40px 100px rgba(0,0,0,.7);
   display:flex;
   flex-direction:column;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   text-align:center;
-
-  font-size:2.25rem;           /* bigger question */
+  font-size:2.2rem;
   line-height:1.5;
   position:relative;
-
-  animation:slideIn .35s ease;
 }
 
-@keyframes slideIn{
-  from{transform:translateX(60px);opacity:0}
-  to{transform:translateX(0);opacity:1}
-}
-
-/* ANSWER */
 .answer{
   margin-top:34px;
   padding:18px;
@@ -173,7 +145,6 @@ select{
   max-width:720px;
 }
 
-/* SHOW BTN */
 .showBtn{
   margin-top:34px;
   padding:13px 24px;
@@ -182,10 +153,8 @@ select{
   background:linear-gradient(90deg,#6366f1,#06b6d4);
   color:white;
   cursor:pointer;
-  font-size:1.08rem;
 }
 
-/* STAR */
 .star{
   position:absolute;
   top:18px;
@@ -194,7 +163,6 @@ select{
   cursor:pointer;
 }
 
-/* NAV */
 .navBtns{
   margin-top:30px;
   display:flex;
@@ -208,7 +176,6 @@ select{
   background:linear-gradient(90deg,#6366f1,#06b6d4);
   color:white;
   cursor:pointer;
-  font-size:1.05rem;
 }
 
 /* ================= SHOW ALL ================= */
@@ -224,9 +191,10 @@ select{
   padding:28px;
   border-radius:18px;
   margin-bottom:20px;
-  position:relative;
-  font-size:1.18rem;
-  box-shadow:0 12px 30px rgba(0,0,0,.45);
+}
+
+.allCard .answer{
+  display:none;
 }
 
 /* ================= MARKED PANEL ================= */
