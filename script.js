@@ -62,6 +62,7 @@ const prevBtn=document.getElementById("prevBtn");
 const nextBtn=document.getElementById("nextBtn");
 const toggleBtn=document.getElementById("toggleBtn");
 const navButtons=document.getElementById("navButtons");
+const diffList=document.getElementById("diffList");
 
 // ===== STATE =====
 let questions=[];
@@ -94,8 +95,6 @@ function loadQuestions(){
 // ===== RENDER =====
 function render(){
   counter.textContent=`${index+1}/${questions.length}`;
-
-  // SHOW/HIDE NAV BASED ON MODE
   navButtons.style.display = single ? "flex" : "none";
 
   if(single){
@@ -103,7 +102,9 @@ function render(){
   } else {
     questionArea.innerHTML=questions.map((q,i)=>multiCardHTML(q,i)).join("");
   }
+
   attachShowButtons();
+  renderDifficultPanel();
 }
 
 // ===== CARD HTML =====
@@ -139,6 +140,14 @@ function toggleDiff(i){
   render();
 }
 
+// ===== RENDER DIFFICULT PANEL =====
+function renderDifficultPanel(){
+  const difficultQs = questions.filter(q=>q.d);
+  diffList.innerHTML = difficultQs.length>0 ?
+    difficultQs.map(q=>`<li>${q.q}</li>`).join('') :
+    "<li>No difficult questions marked</li>";
+}
+
 // ===== NAVIGATION =====
 prevBtn.onclick=()=>{
   if(index>0) index--;
@@ -149,6 +158,7 @@ nextBtn.onclick=()=>{
   render();
 };
 
+// ===== TOGGLE SINGLE / ALL =====
 toggleBtn.onclick=()=>{
   single=!single;
   toggleBtn.textContent=single?"Show All":"Single";
