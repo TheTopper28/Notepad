@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Revision Quiz</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="loginPage" class="login-page">
+<div id="loginPage" class="page login-page">
   <div class="login-box">
     <h2>Student Login</h2>
     <input id="userInput" placeholder="Username">
@@ -18,15 +19,14 @@
 </div>
 
 <!-- APP -->
-<div id="appPage" class="app-page hidden">
-
+<div id="appPage" class="page hidden">
   <header class="app-header">
     <h1>Revision Quiz</h1>
     <div class="top-right">
       <span id="userName"></span>
-      <span id="counter">0/0</span>
-      <button id="themeBtn">🌙</button>
-      <button id="toggleDifficultBtn">⭐</button>
+      <span id="counter"></span>
+      <button id="markedToggle">⭐ Marked</button>
+      <button id="modeToggle">Show All</button>
       <button id="logoutBtn">Logout</button>
     </div>
   </header>
@@ -34,27 +34,25 @@
   <div class="controls">
     <select id="subjectSelect"></select>
     <select id="topicSelect"></select>
-    <button id="toggleBtn">Show All</button>
   </div>
 
-  <div id="quizArea">
+  <div id="quizContainer">
     <div id="questionArea"></div>
 
-    <div class="question-nav" id="navButtons">
+    <div id="navBtns" class="navBtns">
       <button id="prevBtn">⬅ Prev</button>
       <button id="nextBtn">Next ➡</button>
     </div>
   </div>
-
 </div>
 
 <!-- MARKED PANEL -->
-<div id="difficultPanel">
-  <div class="panelHeader">
-    <h3>⭐ Marked</h3>
-    <button id="closePanelBtn">✕</button>
+<div id="markedPanel" class="marked-panel">
+  <div class="marked-header">
+    <h3>⭐ Marked Questions</h3>
+    <button id="closeMarked">✕</button>
   </div>
-  <ul id="diffList"></ul>
+  <div id="markedList"></div>
 </div>
 
 <script src="script.js"></script>
