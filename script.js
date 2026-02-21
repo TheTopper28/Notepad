@@ -1,176 +1,109 @@
-// ========= DATA =========
-const data={
-  Mathematics:{
-    Algebra:[
-      {q:"Solve 2x+5=15",a:"x=5",d:false},
-      {q:"Factor x²-9",a:"(x-3)(x+3)",d:true}
-    ],
-    Geometry:[
-      {q:"Sum of triangle angles?",a:"180°",d:false}
-    ]
-  },
-  Science:{
-    Physics:[
-      {q:"Unit of force?",a:"Newton",d:false}
-    ]
-  }
+let mode = "all";
+let currentIndex = 0;
+let marked = [];
+
+const data = {
+  math: [
+    {q:"What is CI formula?",a:"A = P(1+r/n)^(nt)"},
+    {q:"Area of circle?",a:"πr²"}
+  ],
+  science: [
+    {q:"Unit of force?",a:"Newton"},
+    {q:"Speed formula?",a:"Distance/Time"}
+  ]
 };
 
-// LOGIN
-const loginPage=document.getElementById("loginPage");
-const appPage=document.getElementById("appPage");
-const loginBtn=document.getElementById("loginBtn");
-const resetBtn=document.getElementById("resetBtn");
-const logoutBtn=document.getElementById("logoutBtn");
-const nameInput=document.getElementById("nameInput");
-const passInput=document.getElementById("passInput");
-const loginError=document.getElementById("loginError");
-const userName=document.getElementById("userName");
+function login(){
+  const name = document.getElementById("username").value;
+  if(!name) return;
 
-loginBtn.onclick=()=>{
-  const name=nameInput.value.trim();
-  const pass=passInput.value.trim();
-  if(!name||!pass){loginError.textContent="Enter details";return;}
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("mainPage").classList.remove("hidden");
 
-  let users=JSON.parse(localStorage.getItem("rev_users")||"{}");
-
-  if(!users[name]){
-    users[name]=pass;
-    localStorage.setItem("rev_users",JSON.stringify(users));
-  }
-  else if(users[name]!==pass){
-    loginError.textContent="Wrong password";
-    return;
-  }
-
-  localStorage.setItem("rev_current_user",name);
-  loginPage.style.display="none";
-  appPage.classList.remove("hidden");
-  userName.textContent=name;
-};
-
-const savedUser=localStorage.getItem("rev_current_user");
-if(savedUser){
-  loginPage.style.display="none";
-  appPage.classList.remove("hidden");
-  userName.textContent=savedUser;
+  renderQuestions();
 }
 
-resetBtn.onclick=()=>{localStorage.clear();location.reload();}
-logoutBtn.onclick=()=>{localStorage.removeItem("rev_current_user");location.reload();}
-
-// THEME
-document.getElementById("themeBtn").onclick=()=>{
+function toggleTheme(){
   document.body.classList.toggle("light");
-};
-
-// QUIZ
-const subjectSelect=document.getElementById("subjectSelect");
-const topicSelect=document.getElementById("topicSelect");
-const quizContainer=document.getElementById("quizContainer");
-const modeBtn=document.getElementById("modeBtn");
-const markedBtn=document.getElementById("markedBtn");
-const markedPanel=document.getElementById("markedPanel");
-const closeMarked=document.getElementById("closeMarked");
-const markedList=document.getElementById("markedList");
-
-let questions=[];
-let index=0;
-let quizMode=true;
-
-Object.keys(data).forEach(s=>{
-  subjectSelect.innerHTML+=`<option>${s}</option>`;
-});
-
-subjectSelect.onchange=loadTopics;
-topicSelect.onchange=loadQuestions;
-
-function loadTopics(){
-  topicSelect.innerHTML="";
-  Object.keys(data[subjectSelect.value]).forEach(t=>{
-    topicSelect.innerHTML+=`<option>${t}</option>`;
-  });
-  loadQuestions();
 }
 
-function loadQuestions(){
-  questions=data[subjectSelect.value][topicSelect.value];
-  index=0;
-  render();
+function toggleMode(){
+  mode = mode==="all" ? "quiz":"all";
+  renderQuestions();
 }
 
-function render(){
-  if(quizMode){
-    const q=questions[index];
-    quizContainer.innerHTML=`
-      <div class="card">
-        ${q.q}
-        <button class="showBtn">Show Answer</button>
-        <div class="answer">${q.a}</div>
-        <span class="star">${q.d?"⭐":"☆"}</span>
-        <div class="navBtns">
-          <button id="prevBtn">Previous</button>
-          <button id="nextBtn">Next</button>
+function toggleMarked(){
+  document.getElementById("markedPanel").classList.toggle("open");
+  renderMarked();
+}
+
+function renderMarked(){
+  const list = document.getElementById("markedList");
+  list.innerHTML = marked.map(q=>`<div>${q}</div>`).join("");
+}
+
+function renderQuestions(){
+  const subject = document.getElementById("subjectSelect").value;
+  const container = document.getElementById("quizContainer");
+  const questions = data[subject];
+
+  if(mode==="all"){
+    container.innerHTML = questions.map((item,i)=>`
+      <div class="questionCard">
+        <div class="questionText">${item.q}</div>
+
+        <button class="showBtn" onclick="toggleAnswer(${i})">
+          Show Answer
+        </button>
+
+        <div id="ans${i}" class="answer">${item.a}</div>
+      </div>
+    `).join("");
+  }
+
+  else{
+    const q = questions[currentIndex];
+    container.innerHTML = `
+      <div class="quizCard">
+        <div class="quizQuestion">${q.q}</div>
+
+        <button onclick="toggleAnswer('quizAns')">
+          Show Answer
+        </button>
+
+        <div id="quizAns" class="answer">${q.a}</div>
+
+        <div class="quizButtons">
+          <button onclick="prev()">Previous</button>
+          <button onclick="next()">Next</button>
+          <button onclick="mark('${q.q}')">⭐</button>
         </div>
       </div>
     `;
-  }else{
-    quizContainer.innerHTML=`<div class="allContainer">${
-      questions.map(q=>`
-        <div class="allCard">
-          ${q.q}
-          <button class="showBtn">Show Answer</button>
-          <div class="answer">${q.a}</div>
-          <span class="star">${q.d?"⭐":"☆"}</span>
-        </div>
-      `).join("")
-    }</div>`;
   }
-
-  attachEvents();
 }
 
-function attachEvents(){
-  document.querySelectorAll(".showBtn").forEach(btn=>{
-    btn.onclick=()=>{
-      const ans=btn.nextElementSibling;
-      ans.style.display=ans.style.display==="block"?"none":"block";
-    };
-  });
-
-  document.querySelectorAll(".star").forEach((s,i)=>{
-    s.onclick=()=>{
-      questions[i].d=!questions[i].d;
-      render();
-      updateMarked();
-    };
-  });
-
-  const prev=document.getElementById("prevBtn");
-  const next=document.getElementById("nextBtn");
-
-  if(prev) prev.onclick=()=>{if(index>0) index--; render();};
-  if(next) next.onclick=()=>{if(index<questions.length-1) index++; render();};
+function toggleAnswer(id){
+  const el = document.getElementById(
+    typeof id==="number" ? "ans"+id : id
+  );
+  el.style.display = el.style.display==="block"?"none":"block";
 }
 
-modeBtn.onclick=()=>{
-  quizMode=!quizMode;
-  modeBtn.textContent=quizMode?"Quiz Mode":"Show All";
-  render();
-};
-
-markedBtn.onclick=()=>{
-  markedPanel.classList.add("open");
-  updateMarked();
-};
-
-closeMarked.onclick=()=>{
-  markedPanel.classList.remove("open");
-};
-
-function updateMarked(){
-  const marked=questions.filter(q=>q.d);
-  markedList.innerHTML=marked.map(q=>`<div>${q.q}</div>`).join("");
+function next(){
+  const subject = document.getElementById("subjectSelect").value;
+  currentIndex = (currentIndex+1)%data[subject].length;
+  renderQuestions();
 }
 
-loadTopics();
+function prev(){
+  const subject = document.getElementById("subjectSelect").value;
+  currentIndex =
+    (currentIndex-1+data[subject].length)%data[subject].length;
+  renderQuestions();
+}
+
+function mark(q){
+  if(!marked.includes(q)) marked.push(q);
+  renderMarked();
+}
