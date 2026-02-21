@@ -86,11 +86,11 @@ function showQuestions() {
     // Quiz Mode: one question at a time
     const it = list[currentIndex];
     const card = document.createElement("div");
-    card.className = "question-card fade";
+    card.className = "question-card quiz-mode fade";
     card.innerHTML = `
-      <div>Q${currentIndex + 1}. ${it.q}</div>
+      <div class="quiz-question">Q${currentIndex + 1}. ${it.q}</div>
       <button class="show-btn">Show Answer</button>
-      <div class="answer">${it.a}</div>
+      <div class="answer quiz-answer">${it.a}</div>
       <div class="nav-buttons">
         <button id="prevBtn" class="show-btn">Previous</button>
         <button id="nextBtn" class="show-btn">Next</button>
@@ -98,7 +98,7 @@ function showQuestions() {
       <div class="progress">Question ${currentIndex + 1} of ${list.length}</div>
     `;
     const b = card.querySelector(".show-btn");
-    const a = card.querySelector(".answer");
+    const a = card.querySelector(".quiz-answer");
     b.onclick = () => {
       a.style.display = a.style.display === "block" ? "none" : "block";
     };
