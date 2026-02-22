@@ -24,8 +24,9 @@ const data = {
     ]
   },
   Science: {
-    Physics: [
-      { q: "QUESTIONS NOT YET UPLOADED", a: "" }
+    Biology: [
+      { q: "Differentiate between Cell wall and cell membrane.", a: "Cell wall is present in plant cell only while cell membrane is present in both plant and animal cell.Cell wall id flexible while cell membrane is rigid." }
+      {q:"Write the fuctions of Lysosome,Golgi Bodies and centrosomes.",a:"Accourding to the google ant textbook"}
     ]
   }
 };
